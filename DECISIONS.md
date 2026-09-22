@@ -57,41 +57,65 @@ they'd feel mostly the time-to-first-token instead.
 
 ### 3. Variance
 
+Homework: full live sweep, `02_variance.py --full`. The starter script's
+`--full` flag didn't actually add the recording's other two prompts to the
+live run (`LIVE_CELLS` only had two), so I extended `LIVE_CELLS`/`from_live`
+with `open_short` and `open_reasoning`, matching the fixture's prompts, to
+get a genuine eight-cell comparison.
+
 | cell | distinct (recording, n=12) | distinct (mine, n=6) | median latency (mine) |
 |---|---|---|---|
-| closed_short, t=0.0 | 1/12 | 1/6 | 0.18 s |
-| closed_short, t=1.0 | 1/12 | 1/6 | 0.18 s |
-| open_list, t=0.0 | 1/12 | 1/6 | 0.62 s |
-| open_list, t=1.0 | 11/12 | 6/6 | 0.61 s |
+| closed_short, t=0.0 | 1/12 | 1/6 | 0.16 s |
+| closed_short, t=1.0 | 1/12 | 1/6 | 0.16 s |
+| open_list, t=0.0 | 1/12 | 1/6 | 0.56 s |
+| open_list, t=1.0 | 11/12 | 6/6 | 0.65 s |
+| open_short, t=0.0 | 1/12 | 1/6 | 0.59 s |
+| open_short, t=1.0 | 5/12 | 5/6 | 0.58 s |
+| open_reasoning, t=0.0 | 1/12 | 2/6 | 2.21 s |
+| open_reasoning, t=1.0 | 12/12 | 6/6 | 2.03 s |
 
-My machine agrees with the recording in every cell: both stay at a single
-distinct answer at t=0.0, `closed_short` stays at a single answer even at
-t=1.0, and `open_list` scatters into (almost) all-distinct answers at
-t=1.0.
+My machine agrees with the recording's pattern in every cell but one:
+`open_reasoning` at t=0.0 came back 2/6 distinct, not fully identical. I
+re-ran that exact cell by itself right after (6 fresh calls) and got 6/6
+identical that time — so it is not a broken prompt or a code bug, it is
+run-to-run non-determinism in the underlying hardware. `temperature=0.0`
+makes the model's *token choice* deterministic (it always picks the
+highest-probability token), but it does not guarantee bit-identical output
+between separate runs on a real GPU: floating-point reduction order can
+differ run to run, and small differences compound more over a long
+978-character answer than a 3-character one. This is the checklist's own
+warning in reverse — a result that *doesn't* match the recording is also
+worth a second look, and here the second look shows the mismatch is real
+and explainable, not a mistake.
 
 Which cell still returns a single answer at temperature 1.0, and why that
 one: `closed_short` ("What is the capital of Luxembourg? Answer in one
 word."). It is not that "the temperature did not work" — it's that this
 prompt's answer distribution is extremely peaked: there is essentially one
 high-probability token ("Luxembourg") and no real competitor, so sampling
-with temperature almost never lands on anything else. `open_list` asks for
-an open-ended, multi-sentence answer with many equally plausible wordings
-and orderings, so its distribution is much flatter and temperature has
-something to actually sample across.
+with temperature almost never lands on anything else. The other three
+prompts ask for open-ended, multi-sentence answers with many equally
+plausible wordings and orderings, so their distributions are much flatter
+and temperature has something to actually sample across — `open_short` sits
+in between (5/6 distinct) because a one-sentence answer has fewer places to
+diverge than a multi-paragraph one.
 
 Which cells a test asserting exact string equality would pass on, and what
 that tells me about testing this system: it would reliably pass on
-`closed_short` at either temperature, and on any cell run at t=0.0. It would
-fail, unpredictably, on `open_list` at t=1.0 (and presumably on other
-open-ended cells at t=1.0, per the recording's `open_short`/
-`open_reasoning` rows). That tells me exact-string equality is only a valid
-test strategy for closed-form, low-entropy outputs or deterministic
-(t=0) runs — open-ended generation needs an evaluator that checks meaning,
-not characters, which is what week 10 builds.
+`closed_short` at either temperature. It would *usually* pass on the other
+cells at t=0.0, but not with certainty — `open_reasoning` at t=0.0 just
+showed me a run where it didn't, on a long enough answer. It would fail
+outright, and unpredictably, on any open-ended cell at t=1.0. That tells me
+exact-string equality is a reasonable test only for short, closed-form,
+low-entropy outputs; for anything longer, even at t=0.0 it's a "usually,"
+not a guarantee, and open-ended generation needs an evaluator that checks
+meaning, not characters, which is what week 10 builds.
 
 **The sentence that carries into week 10.** Repeatability depends on how
-peaked the answer's probability distribution is, not on temperature alone:
-a closed, low-entropy prompt returns the same output even at temperature
+peaked the answer's probability distribution is, not on temperature alone,
+and even a peaked/t=0.0 distribution isn't a hard determinism guarantee on
+real hardware once the answer gets long enough for floating-point order to
+matter: a closed, low-entropy prompt returns the same output even at temperature
 1.0, while an open-ended, high-entropy prompt varies even in *how many*
 genuinely distinct answers show up, so exact-string tests are only valid
 for the former and the latter needs a semantic-equivalence evaluator
@@ -138,13 +162,21 @@ buys little over running it right before something ships.
 
 ### Deferred
 
-- `qwen2.5:7b` (`LARGE`) not pulled today — slow wifi, 4.7 GB, and nothing
-  in today's TODOs actually calls it. Will pull before week 9 per the
-  README's homework instruction; `00_preflight.py` will show one known FAIL
-  line until then.
-- Homework: `02_variance.py --full` currently only produces 4 live rows (2
-  prompts x 2 temperatures), not the 8 the recording has, because
-  `LIVE_CELLS` only defines `closed_short` and `open_list` — the `--full`
-  flag is accepted by `from_live()` but not actually used to add the other
-  two prompts (`open_short`, `open_reasoning`). Worth revisiting as an
-  "if I finish early" extension, not done today.
+- `qwen2.5:7b` (`LARGE`) and `qwen3-vl:4b` (`VISION`), the two optional
+  models, are pulling in the background as I write this (slow wifi tonight)
+  — not confirmed installed yet. `00_preflight.py` will show one known FAIL
+  line ("Missing qwen2.5:7b") until the first one finishes.
+- `02_variance.py`'s `--full` flag originally only produced 4 live rows (2
+  prompts x 2 temperatures) instead of 8, because `LIVE_CELLS` only defined
+  `closed_short` and `open_list`. Fixed for the homework: added
+  `FULL_EXTRA_CELLS` with the recording's other two prompts (`open_short`,
+  `open_reasoning`) and made `from_live()` include them when `--full` is
+  passed. The 8-cell table above is from the fixed script.
+- Read `project_spine/README.md` and skimmed `project/contracts.py`, as the
+  homework asks. Takeaways worth keeping: (1) every `Trace` requires
+  `Conditions` (model, temperature, date) by the type system, not by
+  convention — you cannot write a run without saying what produced it; (2)
+  week-specific data goes in the untyped `notes`/`settings` dicts rather
+  than widening the core schema, so the core fields never change under
+  later weeks; (3) `schema_version` is on every artifact so a stale file
+  fails loudly in `project.verify` instead of silently in week 10.

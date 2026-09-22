@@ -31,11 +31,21 @@ from project.trace import write_json
 FIXTURE = find_fixture("reference_runs.json", __file__,
                        lab="week01_setup_and_first_call")
 
-# The two cells you run live. They are chosen because they disagree.
+# The two cells you run live by default. They are chosen because they
+# disagree. --full adds the other two prompts from the recording, for the
+# homework's eight-cell table.
 LIVE_CELLS = {
     "closed_short": "What is the capital of Luxembourg? Answer in one word.",
     "open_list": "List three responsibilities of a Luxembourg commune "
                  "administration. Be concise.",
+}
+FULL_EXTRA_CELLS = {
+    "open_short": "In one sentence, why is Luxembourg City important to "
+                  "the European Union?",
+    "open_reasoning": "A resident asks whether they need a parking "
+                      "vignette if they park in a visitor bay. Explain "
+                      "what information you would need before answering, "
+                      "and why.",
 }
 LIVE_RUNS = 6
 
@@ -90,7 +100,8 @@ def from_live(full: bool) -> list[dict]:
     from openai import OpenAI
     client = OpenAI(base_url=BASE_URL, api_key=API_KEY)
     rows = []
-    for pname, prompt in LIVE_CELLS.items():
+    cells = {**LIVE_CELLS, **FULL_EXTRA_CELLS} if full else LIVE_CELLS
+    for pname, prompt in cells.items():
         for tname, temp in (("t00", 0.0), ("t10", 1.0)):
             texts, lats = [], []
             for _ in range(LIVE_RUNS):
