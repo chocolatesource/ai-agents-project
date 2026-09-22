@@ -181,3 +181,181 @@ what was deferred during the session and closed out afterward:
   than widening the core schema, so the core fields never change under
   later weeks; (3) `schema_version` is on every artifact so a stale file
   fails loudly in `project.verify` instead of silently in week 10.
+
+---
+
+# Week 2: a structured-output extractor, measured
+
+## Week 2
+
+**Run conditions.** model: qwen3:4b-instruct | temperature: 0.0 | prompt
+version: week02-zero-shot-v1 | served locally | date: 2026-09-22 | scored
+on: the recording (`--replay`, to develop the scorer) and my own machine
+(live, for the numbers below).
+
+### 1. The output contract
+
+The conventions I chose, and why:
+
+- due_date, when the message states no date: `null`. The schema types
+  `due_date` as `date | None`, so "no date" is a real absence, not the
+  string `"null"` or an empty string — those aren't representable at all,
+  which removes a whole category of scorer edge case rather than handling
+  it.
+- due_date, when the message states only a relative expression (e.g.
+  "before the end of the month", "as soon as possible"): also `null`.
+  Only an actual calendar date counts as a date; a relative expression is
+  not something the model should resolve to a specific day on its own
+  (it has no way to know what day "today" is with confidence, and
+  guessing one is worse than admitting there isn't one).
+- quote, and what "verbatim" means in my scorer: exact Python `in`
+  substring search against the raw document text, no lowercasing, no
+  stripping, no whitespace normalization. The moment that check is
+  relaxed, the field stops measuring whether the model copied and starts
+  measuring whether it approximately copied — and copying exactly is the
+  entire point of a field that's free to check.
+- what my scorer does with a record that failed schema validation: counts
+  it in `invalid`, and counts **every field as wrong** for that document,
+  not skipped.
+
+A scorer that silently skips records it couldn't parse would report a
+number that *improves* as the model gets worse (fewer parseable records
+means a smaller, easier denominator) — the most dangerous kind of metric,
+because it looks like progress while hiding failures.
+
+### 2. Zero-shot, per field
+
+| field | correct | of |
+|---|---|---|
+| category | 8 | 10 |
+| urgency | 9 | 10 |
+| due_date | 8 | 10 |
+| quote | 9 | 10 |
+| invalid records | 0 | 10 |
+
+My prediction, written before block 3: examples will help most on
+**due_date** and **category**, because the failures I'm seeing are exactly
+the kind examples fix — REQ-01/REQ-10 hallucinate a date on messages with
+no calendar date at all (the null convention isn't being followed), and
+REQ-04/REQ-08 confuse the facilities/hardware/access boundary in both
+directions. I expect **quote** to move least, since it's a mechanical
+copy task the model is already close to getting right (9/10), and I
+expect it could even get *worse* if my examples show tidied quotes
+(checked for that explicitly when building the block).
+
+### 3. Few-shot
+
+Examples chosen, and the job each one does:
+
+| example | why it is in the block | field it should move |
+|---|---|---|
+| EX-01 (en) — badge reader, access/standard/null | a badge reader is physically hardware, but the correct label is "access" — this is the exact boundary REQ-08 got wrong (in the opposite direction) | category |
+| EX-02 (fr) — elevator stuck, facilities/urgent/null | an elevator is a facility, not "hardware" — the same boundary REQ-04 got wrong, from the other side; also non-English | category |
+| EX-03 (de) — laptop charger, hardware/standard/2026-09-20 | hardware *with* a real due date, so the block shows the "a date is present" convention too, not only the null one; also non-English | due_date, category |
+| EX-06 (en) — window leak, facilities/urgent/null | facilities again, but a non-device object (a window), reinforcing the boundary from yet another angle | category |
+
+| field | zero-shot | few-shot | move |
+|---|---|---|---|
+| category | 8/10 | 8/10 | +0 |
+| urgency | 9/10 | 9/10 | +0 |
+| due_date | 8/10 | 8/10 | +0 |
+| quote | 9/10 | 10/10 | +1 |
+
+### 4. What got worse
+
+Nothing got worse **as a count** — no field's hit rate dropped. But I
+checked the failure lines, not just the counts, and one thing changed
+shape without improving: REQ-04's category error was `hardware` (wrong)
+under zero-shot and became `access` (also wrong) under few-shot. Despite
+including two examples specifically meant to teach the
+facilities/hardware/access boundary (EX-01: hardware-looking object →
+access; EX-02/EX-06: facilities, not hardware), the model just moved to a
+*different* wrong answer rather than the right one — my prediction from
+section 2 was wrong about category moving. REQ-08's category error
+(`access`, expected `hardware`) didn't move at all.
+
+The due_date hallucinations also didn't disappear (REQ-01, REQ-10 both
+still wrong), and the specific wrong dates changed between the zero-shot
+and few-shot runs (`2023-10-10`→`2023-09-07`, `2023-12-31`→`2024-12-31`) —
+that looks like generation noise rather than anything the examples
+touched, since 3 of my 4 examples explicitly demonstrate the null
+convention and it still didn't take.
+
+What genuinely disappeared: REQ-04's quote error (the zero-shot run
+produced a garbled, non-verbatim quote containing a stray non-Latin
+character mid-word; few-shot's quote was clean and verbatim). That's a
+real fix, not a reshuffle — it's the only field where both the error
+count and the underlying failure actually went away.
+
+### 5. What the examples cost
+
+- extra input tokens per call: 276
+- per thousand calls: 276,000
+- estimated euros per thousand calls on the small tier: 0.06 EUR (the
+  example block alone, small-tier input-token price only), against the
+  price list dated 2026-08-10. Estimate, not a measurement.
+
+### 6. Ship it or not
+
+**Not on this evidence.** The only field that actually improved was
+`quote` (+1 out of 10), for a ~57% increase in total tokens over the
+10-document run (4,704 → 7,368, prompt cost alone up 276 tokens/call).
+Category,
+urgency, and due_date — the fields I predicted would move — didn't, and
+one category error just changed which wrong answer it gave. Ten records
+is too small a sample to call a single-document improvement a real
+effect, and I'd rather say that than claim a win.
+
+What would change my mind: the same comparison on a larger set (week 10's
+harness) showing the quote-fidelity gain holds up over more than one
+document, and ideally isolating *why* zero-shot's quote failed — if it's
+a generation-length/decoding artifact rather than something examples fix,
+it might be cheaper to fix with a higher `max_tokens` or a stricter
+`max_length` on the field than to pay 276 tokens on every call forever.
+If I had to keep exactly one example, it would be **EX-02** (the facility
+example that most directly targets the still-unresolved facilities
+confusion), on the chance that a single, less diluted example does what
+four examples spread across multiple goals didn't.
+
+### Sensitivity variant
+
+Variant assigned: none — I'm doing this asynchronously, not in a group,
+so I picked **role**, the least ambiguous variant to test cleanly. What I
+changed: prepended exactly one line, `"You are a senior service desk
+analyst."`, to the few-shot prompt from block 3, nothing else.
+
+What moved: **nothing**. Every field, both live runs: category 8/10,
+urgency 9/10, due_date 8/10, quote 10/10 — identical counts, and the
+per-language breakdown (en/fr/de) also showed identical error counts in
+each language. This matches the brief's own prediction: on a task with
+closed label sets and a schema doing the structural work, a persona buys
+nothing and costs tokens (total tokens rose from 7,389 to 7,485 over the
+10-document run — about 10 tokens/call just for that one prepended
+sentence) on every call. A knob that moves nothing measurable is still a
+real result — it tells me persona framing isn't worth arguing about for
+this kind of task, so if I'm optimizing this prompt later, that's not
+where to spend effort.
+
+### The gold set
+
+Ten cases written to `artifacts/goldset.json`, tagged by language
+(`lang:en`/`lang:fr`/`lang:de`) and by category, confirmed valid by
+`python -m project.verify`.
+
+One thing my scorer cannot currently detect: a **correctly formatted but
+wrong date**. My due_date check only compares the ISO string against the
+gold string for exact equality, so `"2026-09-16"` scores identically
+wrong whether it's off by one day or off by a year — the scorer can tell
+me *that* a date is wrong but not *how* wrong, and a near-miss date (which
+might indicate the model read the right sentence but miscounted) looks
+exactly like a wholly invented one in the aggregate counts. I'd need to
+keep the actual gold and predicted values in the failure log (which I do)
+and read them by hand to tell those apart — the Scoreboard's per-field
+counts alone cannot.
+
+### Deferred
+
+Nothing left outstanding from the week 2 TODO list (1–8 all done,
+`project.verify` passes with `goldset.json` valid). Not done, and not
+recoverable after the fact: the two live checkpoints — same situation as
+week 1, noted there.
