@@ -233,6 +233,11 @@ because it looks like progress while hiding failures.
 | quote | 9 | 10 |
 | invalid records | 0 | 10 |
 
+Tokens: 4,158 prompt + 546 completion over the 10 calls (415.8 / 54.6 per
+call on average). Estimated cost on the small tier: **1.27 EUR per
+thousand calls**, against the price list dated 2026-08-10. Estimate, not
+a measurement — running locally, the actual cost was zero.
+
 My prediction, written before block 3: examples will help most on
 **due_date** and **category**, because the failures I'm seeing are exactly
 the kind examples fix — REQ-01/REQ-10 hallucinate a date on messages with
