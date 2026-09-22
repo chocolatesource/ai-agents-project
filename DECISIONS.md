@@ -18,21 +18,20 @@ are stated once here and referred to rather than repeated.
 
 ### 1. Machine and model set
 
-I am running the required model set, minus one: `qwen3:4b-instruct` and
-`nomic-embed-text` are pulled, but `qwen2.5:7b` is not, because the wifi
-here was slow today and it's a 4.7 GB pull.
+I am now running the required model set plus both optional models:
+`qwen3:4b-instruct`, `nomic-embed-text`, `qwen2.5:7b`, and `qwen3-vl:4b`
+are all pulled, and `00_preflight.py` reports every line green.
 
-This matters more than it looks: `project/models.py` lists `qwen2.5:7b` as
-`REQUIRED` (needed for `00_preflight.py` to go fully green), but the
-README's "before you arrive" list only asks for the other two, and calls
-`qwen2.5:7b` a homework pull "before week 9." That's an inconsistency in the
-course files, not something I misread — I'm treating the README as
-authoritative for week 1 and will pull `qwen2.5:7b` before week 9 as it
-instructs. Until then, `00_preflight.py` reports one FAIL line
-("model server and required models: Missing qwen2.5:7b"), which is the
-known-and-understood red line checklist item 1 allows for. None of today's
-scripts actually call `qwen2.5:7b` — 03_cost.py only uses the words
-"small"/"large" as price *tiers*, not the model itself.
+That wasn't true during the live session — the wifi was slow, so I did the
+lab (`qwen3:4b-instruct` and `nomic-embed-text` only) with `qwen2.5:7b`
+still missing. Worth recording anyway: `project/models.py` lists
+`qwen2.5:7b` as `REQUIRED` (needed for `00_preflight.py` to go fully green),
+while the README's "before you arrive" list only asks for the other two
+and calls `qwen2.5:7b` a homework pull "before week 9." That's a real
+inconsistency in the course files. None of today's lab scripts actually
+call `qwen2.5:7b` — 03_cost.py only uses the words "small"/"large" as price
+*tiers*, not the model itself — so it cost nothing to defer during the
+session and pull as homework afterward, which is what happened.
 
 ### 2. The first call
 
@@ -162,10 +161,12 @@ buys little over running it right before something ships.
 
 ### Deferred
 
+Nothing left outstanding from the week 1 homework list. For the record,
+what was deferred during the session and closed out afterward:
+
 - `qwen2.5:7b` (`LARGE`) and `qwen3-vl:4b` (`VISION`), the two optional
-  models, are pulling in the background as I write this (slow wifi tonight)
-  — not confirmed installed yet. `00_preflight.py` will show one known FAIL
-  line ("Missing qwen2.5:7b") until the first one finishes.
+  models, took about 45 minutes to pull on slow wifi. Both installed now;
+  `00_preflight.py` is fully green.
 - `02_variance.py`'s `--full` flag originally only produced 4 live rows (2
   prompts x 2 temperatures) instead of 8, because `LIVE_CELLS` only defined
   `closed_short` and `open_list`. Fixed for the homework: added
