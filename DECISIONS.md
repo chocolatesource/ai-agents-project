@@ -409,9 +409,14 @@ Neither model's confidence separates right from wrong: LARGE's six applied
 errors in the saved stretch run (`week03_stretch_model.json`) all carried 0.95
 or 1.00 (it has no other values), and SMALL's one 0.00 was on a query it got
 right. Any floor between 0.01 and 0.95 behaves identically on both models.
-These distributions and the empty/non-verbatim spans for Q-22 and Q-16 come from
-the live `probe_conf.py` console output and the saved traces; the probe output
-itself was not saved to a file.
+These distributions are saved in `artifacts/week03_probe_qwen3_4b-instruct.json`
+and `artifacts/week03_probe_qwen2.5_7b.json`. The first probe, which I used to
+choose the floor, was console output only; I reran both probes afterwards and
+they reproduced it exactly (SMALL 23/24 by intention, confidences 0.0, 0.95,
+0.99, 0.999; LARGE 19/24, confidences 0.95 and 1.0). In the saved SMALL probe,
+Q-22 has confidence 0.0 and an empty span, and Q-16's span is not verbatim.
+LARGE's five intent-level errors (Q-08, Q-10, Q-18, Q-20, Q-21) all carry 0.95
+or 1.00.
 
 - confidence floor: **0.9**, because it sits in that dead zone and only catches
   a classifier saying outright that it does not know. It is a formality, not a
@@ -513,9 +518,11 @@ over 4 distinct values, 3.9 GB resident. LARGE **18/24** (16/20), evidence
 verbatim 20/24, confidence 0.95 to 1.00 over 2 distinct values, 5.0 GB
 resident (both from `project/models.py`, not measured here). The smaller model
 won and the larger one's evidence span failed the verbatim check four times;
-in the probe output I saw it return accented text ("créer") where the
-message has none, which is my explanation for some of the four, but I did not
-inspect all four spans. Narrow instruction following
+the saved probe (`week03_probe_qwen2.5_7b.json`) shows why: three of the four
+(Q-05, Q-08, Q-09) are the model re-inserting accents ("créer", "für",
+"résidence") that the message does not have, and the fourth (Q-24) is the span
+"Something is broken, missing, or needed (a fault, an account...", copied from
+my own route definition in the prompt instead of from the message. Narrow instruction following
 with a verbatim-copy requirement does not reward size. LARGE's errors were
 spread over five different confusion pairs (six errors); SMALL's all went into
 `info`.
@@ -637,18 +644,23 @@ is reported separately so the 3/10 stays visible.
 
 ### 4. What the tools bought
 
-No-tool baseline (`--no-tools`, plain system prompt): **2/10** (passes T-04
-and T-08 only). With tools: 3/10, and 6/10 with the guard.
+No-tool baseline (`--no-tools`, plain system prompt), run twice at
+temperature 0.0: **2/10** the first time (passes T-04 and T-08) and **1/10** on
+the rerun (T-08 only; T-04 flipped to a fail), so even at temperature 0.0 the
+baseline moves by one task between runs. The rerun is saved in
+`artifacts/week04_agent_large_notools_rerun.json` (1,109 tokens, 8.2 s); the
+first run's 1,125 tokens and 8.8 s were console output only. With tools: 3/10,
+and 6/10 with the guard.
 
-Unguarded, the tools were a net gain of one task: they gained T-01 and T-06
-but lost T-04, which the no-tool run answered correctly and the unguarded
-tool run refused without searching. The guard recovers T-04 and adds T-02 and
-T-03, for a net gain of four over no tools. Cost: about 13 times the tokens
-unguarded (1,125 against 14,539) and about 20 times guarded (22,395). Time:
-17.2 s unguarded and 23.4 s guarded against 8.8 s with no tools (the no-tool
-time is console output, not saved), but the unguarded figure includes a 7.7 s
-cold start on the first call (T-01), so the unguarded loop is not clearly
-slower once warm. The large gap between the unguarded and guarded loop is the
+Unguarded, the tools were a net gain of one or two tasks depending on which
+no-tool run you compare to: they gained T-01 and T-06, and on the first
+no-tool run they lost T-04, which the no-tool run answered correctly and the
+unguarded tool run refused without searching. The guard recovers T-04 and
+adds T-02 and T-03, for a net gain of four or five over no tools. Cost: about
+13 times the tokens unguarded (1,125 against 14,539) and about 20 times guarded
+(22,395). Time: 17.2 s unguarded and 23.4 s guarded against 8.2 to 8.8 s with
+no tools, but the unguarded figure includes a 7.7 s cold start on the first
+call (T-01), so the unguarded loop is not clearly slower once warm. The large gap between the unguarded and guarded loop is the
 real result: having a tool does not mean the model uses it.
 
 ### 5. The four findings

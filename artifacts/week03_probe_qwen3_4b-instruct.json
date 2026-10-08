@@ -1,0 +1,279 @@
+{
+  "model": "qwen3:4b-instruct",
+  "date": "2026-10-08",
+  "correct_by_intention": 23,
+  "total": 24,
+  "distinct_confidences": [
+    0.0,
+    0.95,
+    0.99,
+    0.999
+  ],
+  "evidence_verbatim": 23,
+  "rows": [
+    {
+      "id": "Q-01",
+      "gold": "request",
+      "got": "request",
+      "confidence": 0.999,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "The main entrance door of the Bierger-Center did not lock last night. It is standing open right now and anyone can walk into the building. Someone needs to come immediately.",
+      "evidence_verbatim": true,
+      "seconds": 5.247
+    },
+    {
+      "id": "Q-02",
+      "gold": "request",
+      "got": "request",
+      "confidence": 0.999,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "l'imprimante du service technique au deuxieme etage n'imprime plus depuis lundi. Nous en aurons besoin pour la seance du conseil, donc au plus tard le 15/09/2026.",
+      "evidence_verbatim": true,
+      "seconds": 0.957
+    },
+    {
+      "id": "Q-03",
+      "gold": "request",
+      "got": "request",
+      "confidence": 0.999,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "Guten Tag, die Heizung im Sitzungssaal funktioniert nicht, die Raumtemperatur liegt bei etwa vierzehn Grad. Die naechste oeffentliche Sitzung ist am 1. Oktober 2026.",
+      "evidence_verbatim": true,
+      "seconds": 1.04
+    },
+    {
+      "id": "Q-04",
+      "gold": "request",
+      "got": "request",
+      "confidence": 0.99,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "Could someone please add me to the shared mailbox for building permits? I was moved to that team last week and I still only see my own inbox.",
+      "evidence_verbatim": true,
+      "seconds": 0.769
+    },
+    {
+      "id": "Q-05",
+      "gold": "request",
+      "got": "request",
+      "confidence": 0.99,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "Pourriez-vous lui creer un compte sur le portail interne et lui donner acces au dossier partage du service?",
+      "evidence_verbatim": true,
+      "seconds": 0.713
+    },
+    {
+      "id": "Q-06",
+      "gold": "request",
+      "got": "request",
+      "confidence": 0.99,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "I cannot sign in to the citizen portal any more and the password reset email never arrives. I have a residence appointment tomorrow at 09:00 and I need the confirmation letter before then.",
+      "evidence_verbatim": true,
+      "seconds": 0.873
+    },
+    {
+      "id": "Q-07",
+      "gold": "info",
+      "got": "info",
+      "confidence": 0.99,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "What are the opening hours of the Bierger-Center on the Saturday before a public holiday? The website shows two different times.",
+      "evidence_verbatim": true,
+      "seconds": 0.721
+    },
+    {
+      "id": "Q-08",
+      "gold": "info",
+      "got": "info",
+      "confidence": 0.99,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "Welche Unterlagen brauche ich fuer die Anmeldung eines Umzugs innerhalb der Gemeinde? Reicht der Personalausweis?",
+      "evidence_verbatim": true,
+      "seconds": 0.84
+    },
+    {
+      "id": "Q-09",
+      "gold": "info",
+      "got": "info",
+      "confidence": 0.999,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "Est-ce que la demande de certificat de residence peut se faire entierement en ligne, ou faut-il se presenter au guichet?",
+      "evidence_verbatim": true,
+      "seconds": 0.865
+    },
+    {
+      "id": "Q-10",
+      "gold": "info",
+      "got": "info",
+      "confidence": 0.99,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "Which form do I use to register a change of bank details for the waste collection invoice? I only found the form for a change of address.",
+      "evidence_verbatim": true,
+      "seconds": 0.859
+    },
+    {
+      "id": "Q-11",
+      "gold": "info",
+      "got": "info",
+      "confidence": 0.99,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "Does the help desk handle requests for the school transport pass, or is that a different service?",
+      "evidence_verbatim": true,
+      "seconds": 0.736
+    },
+    {
+      "id": "Q-12",
+      "gold": "status",
+      "got": "status",
+      "confidence": 0.99,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "Is there an update?",
+      "evidence_verbatim": true,
+      "seconds": 0.56
+    },
+    {
+      "id": "Q-13",
+      "gold": "status",
+      "got": "status",
+      "confidence": 0.99,
+      "correct": true,
+      "ambiguous": true,
+      "evidence": "Pouvez-vous me dire ou elle en est?",
+      "evidence_verbatim": true,
+      "seconds": 0.633
+    },
+    {
+      "id": "Q-14",
+      "gold": "status",
+      "got": "status",
+      "confidence": 0.99,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "gibt es schon eine Rueckmeldung zu meiner Meldung HD-2026-0790 vom 12. August?",
+      "evidence_verbatim": true,
+      "seconds": 0.871
+    },
+    {
+      "id": "Q-15",
+      "gold": "status",
+      "got": "status",
+      "confidence": 0.99,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "Just checking whether the ticket about the archive room humidity is still open. No rush, I only need to know before Friday's handover meeting.",
+      "evidence_verbatim": true,
+      "seconds": 0.839
+    },
+    {
+      "id": "Q-16",
+      "gold": "complaint",
+      "got": "complaint",
+      "confidence": 0.999,
+      "correct": true,
+      "ambiguous": true,
+      "evidence": "This is the third time I am writing about the heating in the meeting room. It has been broken for three weeks, nobody has replied, and we are holding public sessions at fourteen degrees. This is not接受",
+      "evidence_verbatim": false,
+      "seconds": 1.091
+    },
+    {
+      "id": "Q-17",
+      "gold": "complaint",
+      "got": "complaint",
+      "confidence": 0.99,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "Je trouve inadmissible que le guichet ait ferme a onze heures trente sans aucune annonce alors que j'avais pris une demi-journee de conge pour m'y rendre.",
+      "evidence_verbatim": true,
+      "seconds": 1.038
+    },
+    {
+      "id": "Q-18",
+      "gold": "complaint",
+      "got": "complaint",
+      "confidence": 0.99,
+      "correct": true,
+      "ambiguous": true,
+      "evidence": "Mein Passwort wurde schon zweimal zurueckgesetzt und funktioniert wieder nicht. Ausserdem hat mir niemand auf meine letzte Anfrage geantwortet. So kann ich nicht arbeiten.",
+      "evidence_verbatim": true,
+      "seconds": 1.042
+    },
+    {
+      "id": "Q-19",
+      "gold": "complaint",
+      "got": "complaint",
+      "confidence": 0.99,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "The tone of the last reply I received from the help desk was dismissive. I understand you are busy, but I would like someone to look at how that message was written.",
+      "evidence_verbatim": true,
+      "seconds": 0.957
+    },
+    {
+      "id": "Q-20",
+      "gold": "other",
+      "got": "other",
+      "confidence": 0.95,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "can you tell me whether I am legally allowed to sublet my apartment if my lease does not mention it",
+      "evidence_verbatim": true,
+      "seconds": 0.773
+    },
+    {
+      "id": "Q-21",
+      "gold": "other",
+      "got": "info",
+      "confidence": 0.99,
+      "correct": false,
+      "ambiguous": false,
+      "evidence": "je souhaite contester le montant de ma taxe fonciere. Pouvez-vous transmettre au service des finances ou dois-je ecrire directement?",
+      "evidence_verbatim": true,
+      "seconds": 0.913
+    },
+    {
+      "id": "Q-22",
+      "gold": "other",
+      "got": "other",
+      "confidence": 0.0,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "",
+      "evidence_verbatim": true,
+      "seconds": 0.468
+    },
+    {
+      "id": "Q-23",
+      "gold": "other",
+      "got": "other",
+      "confidence": 0.99,
+      "correct": true,
+      "ambiguous": false,
+      "evidence": "GROW YOUR BUSINESS FAST. We offer guaranteed first page ranking for municipal websites. Reply STOP to unsubscribe.",
+      "evidence_verbatim": true,
+      "seconds": 0.765
+    },
+    {
+      "id": "Q-24",
+      "gold": "request",
+      "got": "request",
+      "confidence": 0.99,
+      "correct": true,
+      "ambiguous": true,
+      "evidence": "The lift in the administrative building has been out of order since Monday and I would also like to know who is responsible for arranging repairs, because last time it took a month.",
+      "evidence_verbatim": true,
+      "seconds": 0.927
+    }
+  ]
+}

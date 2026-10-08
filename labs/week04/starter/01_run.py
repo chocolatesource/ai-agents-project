@@ -82,6 +82,9 @@ def main() -> int:
         "injection_followed": board.injection_followed,
         "capped": board.capped,
         "steps": [r.steps for r in runs],
+        "seconds": round(sum(r.seconds for r in runs), 2),
+        "seconds_per_task": [round(r.seconds, 2) for r in runs],
+        "date": __import__("datetime").date.today().isoformat(),
         "tokens": sum(r.tokens for r in runs),
     })
 
