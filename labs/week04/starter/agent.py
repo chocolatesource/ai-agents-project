@@ -164,8 +164,15 @@ def run_tool_call(name: str, raw_arguments: str) -> tuple[Any, bool]:
     except TypeError:
         return (f"error: wrong arguments for {name}. Check the parameter "
                 f"names and types in the tool schema."), True
-    except Exception as exc:  # noqa: BLE001 - a tool may raise anything
-        return f"error: {str(exc)[:200]}", True
+    except ValueError as exc:
+        # The tools raise ValueError with a message written for the model.
+        # Still redact anything path-shaped before it leaves the executor.
+        return f"error: {_redact(str(exc))[:200]}", True
+    except Exception:  # noqa: BLE001 - a tool may raise anything
+        # Unknown failure: its message may carry paths or internals, so the
+        # model gets a generic, actionable line and nothing else.
+        return ("error: the tool failed unexpectedly. Try a different call "
+                "or answer without it."), True
 
     # 4. Cap what comes back, in characters.
     text = result if isinstance(result, str) else json.dumps(
@@ -320,6 +327,13 @@ def run_task(client, task, model: str = LARGE.name,
                cap_fired=run.cap_fired, steps=run.steps,
                tool_calls=run.tool_calls)
     return run
+
+
+_PATHLIKE = re.compile(r"([A-Za-z]:\\[^\s]*|/(?:Users|home|var|etc|tmp)/[^\s]*)")
+
+
+def _redact(text: str) -> str:
+    return _PATHLIKE.sub("[path removed]", text)
 
 
 _CLAIMS_NOT_COVERED = re.compile(

@@ -489,6 +489,13 @@ The comparison against it is on cost and on what can be guaranteed (section 5),
 not on a head-to-head accuracy number, and I did not judge answer quality of
 the 24 replies by hand.
 
+Why the monolith is a fair opponent: it is told about all five kinds of message
+and given the same don't-invent, don't-promise and don't-obey rules the
+specialists carry, in the same language and length limits, on the same model
+at temperature 0.0; the only thing it lacks is specialization, which is the
+variable under test. (It is a fair opponent on instructions, not on measured
+quality, because I did not grade its replies.)
+
 ### 5. What routing bought
 
 A specialist can be forbidden things the monolith cannot be given: the
@@ -727,10 +734,34 @@ passes.
 
 ### Deferred
 
-Not done: a three-run consistency check, and deliberately breaking a tool to
-read its error text (I did write the executor so that only the exception
-message, never a path or traceback, goes back to the model, but I did not test
-a failure on a real tool). I did not establish why T-02 and T-03 searched on the
+**The failure my scorer cannot detect:** a right answer reached the wrong way,
+or a right figure in a wrong claim. It checks that gold strings appear as
+substrings, so it cannot tell whether the agent used the tools or whether the
+sentence around the figure is true. Evidence: in the course recording,
+qwen2.5:7b passes T-01 (gold "245") having called `search_services` only and
+never `compute`, i.e. it did the arithmetic itself, which the task says it
+should not be trusted to do. Also, `gold_any` strings for T-10 are generic
+words ("handbook", "cannot"), so an invented fee that mentions "the handbook"
+passes the text check; only the separate invented-figure regex stops it.
+
+**Step distribution** (unguarded run, qwen2.5:7b): min 1, max 3, mean 1.6. The
+only 3-step task is T-01 (search, compute, answer); the 1-step tasks are T-08
+(correctly no tool) and the zero-tool refusals (T-02, T-03, T-04, T-07), so the
+low mean is mostly refusals, not efficiency. There is no long tail to explain.
+
+**Tool errors forced** (`test_tool_errors.py`, 9 cases: invalid JSON, non-object
+arguments, unknown tool, missing and misnamed arguments, an empty query, an
+unsafe expression, and two tools made to raise exceptions whose messages
+contain a Windows path and a Linux path). The first run **leaked both paths**
+to the model, because the executor passed `str(exc)` through for any
+exception. The real tools never triggered it (they raise only `ValueError`
+with fixed messages), but the executor should not depend on that. Fixed: a
+`ValueError` message has path-shaped text redacted, and any other exception
+returns a generic line. Rerun: 0 of 9 leak a path. I did not test an error
+inside a live agent run, so what the model does *next* after an error is
+unmeasured.
+
+Not done: a three-run consistency check. I did not establish why T-02 and T-03 searched on the
 recording's machine and refused on mine (see section 3); everything else
 about the 7/10 versus 3/10 gap is explained there.
 
