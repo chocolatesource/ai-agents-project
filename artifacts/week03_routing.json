@@ -1,0 +1,42 @@
+{
+  "model": "qwen3:4b-instruct",
+  "router_hits": 21,
+  "total": 24,
+  "unambiguous": [
+    18,
+    20
+  ],
+  "per_route": {
+    "request": [
+      7,
+      7
+    ],
+    "info": [
+      5,
+      5
+    ],
+    "status": [
+      4,
+      4
+    ],
+    "complaint": [
+      3,
+      4
+    ],
+    "other": [
+      2,
+      4
+    ]
+  },
+  "confusion": {
+    "complaint->info": 1,
+    "other->info": 2
+  },
+  "policy_fired": {
+    "evidence_not_verbatim": 2
+  },
+  "evidence_ok": 22,
+  "monolith_tokens": 8153,
+  "router_tokens": 13943,
+  "routing_call_tokens": 9403
+}

@@ -1,0 +1,85 @@
+{
+  "model": "qwen3:4b-instruct",
+  "routed": 7,
+  "valid": 7,
+  "quote_verbatim": 7,
+  "rows": [
+    {
+      "case": "Q-01",
+      "valid": true,
+      "quote_verbatim": true,
+      "record": {
+        "category": "hardware",
+        "urgency": "urgent",
+        "due_date": null,
+        "quote": "It is standing open right now and anyone can walk into the building."
+      }
+    },
+    {
+      "case": "Q-02",
+      "valid": true,
+      "quote_verbatim": true,
+      "record": {
+        "category": "hardware",
+        "urgency": "standard",
+        "due_date": "2026-09-15",
+        "quote": "l'imprimante du service technique au deuxieme etage n'imprime plus depuis lundi"
+      }
+    },
+    {
+      "case": "Q-03",
+      "valid": true,
+      "quote_verbatim": true,
+      "record": {
+        "category": "facilities",
+        "urgency": "standard",
+        "due_date": "2026-10-01",
+        "quote": "die Heizung im Sitzungssaal funktioniert nicht, die Raumtemperatur liegt bei etwa vierzehn Grad"
+      }
+    },
+    {
+      "case": "Q-04",
+      "valid": true,
+      "quote_verbatim": true,
+      "record": {
+        "category": "access",
+        "urgency": "standard",
+        "due_date": null,
+        "quote": "I was moved to that team last week and I still only see my own inbox."
+      }
+    },
+    {
+      "case": "Q-05",
+      "valid": true,
+      "quote_verbatim": true,
+      "record": {
+        "category": "access",
+        "urgency": "standard",
+        "due_date": null,
+        "quote": "Pourriez-vous lui creer un compte sur le portail interne et lui donner acces au dossier partage du service?"
+      }
+    },
+    {
+      "case": "Q-06",
+      "valid": true,
+      "quote_verbatim": true,
+      "record": {
+        "category": "access",
+        "urgency": "urgent",
+        "due_date": "2023-10-06",
+        "quote": "I cannot sign in to the citizen portal any more and the password reset email never arrives."
+      }
+    },
+    {
+      "case": "Q-24",
+      "valid": true,
+      "quote_verbatim": true,
+      "record": {
+        "category": "facilities",
+        "urgency": "urgent",
+        "due_date": "2023-10-13",
+        "quote": "The lift in the administrative building has been out of order since Monday"
+      }
+    }
+  ]
+}

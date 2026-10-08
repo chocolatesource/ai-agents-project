@@ -1,0 +1,14 @@
+{
+  "k": 3,
+  "temperature": 0.7,
+  "hits": 22,
+  "total": 24,
+  "split_votes": [],
+  "ambiguous": [
+    "Q-13",
+    "Q-16",
+    "Q-18",
+    "Q-24"
+  ],
+  "seconds": 61.99536029998853
+}

@@ -1,0 +1,89 @@
+{
+  "qwen3:4b-instruct": {
+    "hits": 21,
+    "total": 24,
+    "unambiguous": [
+      18,
+      20
+    ],
+    "per_route": {
+      "request": [
+        7,
+        7
+      ],
+      "info": [
+        5,
+        5
+      ],
+      "status": [
+        4,
+        4
+      ],
+      "complaint": [
+        3,
+        4
+      ],
+      "other": [
+        2,
+        4
+      ]
+    },
+    "evidence_ok": 22,
+    "conf_min": 0.0,
+    "conf_max": 0.999,
+    "conf_distinct": 4,
+    "policy_fired": {
+      "evidence_not_verbatim": 2
+    },
+    "confusion": {
+      "complaint->info": 1,
+      "other->info": 2
+    },
+    "resident_gb": 3.9
+  },
+  "qwen2.5:7b": {
+    "hits": 18,
+    "total": 24,
+    "unambiguous": [
+      16,
+      20
+    ],
+    "per_route": {
+      "request": [
+        5,
+        7
+      ],
+      "info": [
+        4,
+        5
+      ],
+      "status": [
+        4,
+        4
+      ],
+      "complaint": [
+        3,
+        4
+      ],
+      "other": [
+        2,
+        4
+      ]
+    },
+    "evidence_ok": 20,
+    "conf_min": 0.95,
+    "conf_max": 1.0,
+    "conf_distinct": 2,
+    "policy_fired": {
+      "evidence_not_verbatim": 4
+    },
+    "confusion": {
+      "request->info": 2,
+      "info->request": 1,
+      "complaint->request": 1,
+      "other->info": 1,
+      "other->complaint": 1
+    },
+    "resident_gb": 5.0
+  }
+}
