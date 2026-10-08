@@ -761,7 +761,20 @@ returns a generic line. Rerun: 0 of 9 leak a path. I did not test an error
 inside a live agent run, so what the model does *next* after an error is
 unmeasured.
 
-Not done: a three-run consistency check. I did not establish why T-02 and T-03 searched on the
+**Consistency** (`03_consistency.py`, qwen2.5:7b, temperature 0.0, 2026-10-08,
+the whole set three times in a row, saved in `artifacts/week04_consistency_large.json`
+and `..._large_guard.json`): on all 10 tasks, the step count, the tool
+sequence, the pass/fail verdict and the exact answer text were identical on
+all three runs, for the unguarded agent (3/10, 3/10, 3/10) and for the
+guarded one (6/10, 6/10, 6/10). So on this machine in one sitting the agent is
+fully repeatable, and the refusals on T-02 and T-03 are a stable behavior, not
+bad luck on one run (this also supports the 'repeatably' in section 3). Limits:
+three back-to-back runs on one warm model says nothing about another machine,
+which is exactly where the recording differs from me, and the no-tool baseline,
+which does not use the loop, did move by one task between two runs earlier
+(section 4). Three runs can show variance but cannot bound it.
+
+Not done: I did not establish why T-02 and T-03 searched on the
 recording's machine and refused on mine (see section 3); everything else
 about the 7/10 versus 3/10 gap is explained there.
 

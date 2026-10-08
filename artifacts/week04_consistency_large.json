@@ -1,0 +1,272 @@
+{
+  "model": "qwen2.5:7b",
+  "guard": false,
+  "runs": 3,
+  "date": "2026-10-08",
+  "scores": [
+    3,
+    3,
+    3
+  ],
+  "identical_on_all_runs": {
+    "same_steps": 10,
+    "same_tools": 10,
+    "same_verdict": 10,
+    "same_answer": 10
+  },
+  "tasks": [
+    {
+      "task": "T-01",
+      "steps": [
+        3,
+        3,
+        3
+      ],
+      "tools": [
+        [
+          "search_services",
+          "compute"
+        ],
+        [
+          "search_services",
+          "compute"
+        ],
+        [
+          "search_services",
+          "compute"
+        ]
+      ],
+      "verdicts": [
+        true,
+        true,
+        true
+      ],
+      "same_steps": true,
+      "same_tools": true,
+      "same_verdict": true,
+      "same_answer": true
+    },
+    {
+      "task": "T-02",
+      "steps": [
+        1,
+        1,
+        1
+      ],
+      "tools": [
+        [],
+        [],
+        []
+      ],
+      "verdicts": [
+        false,
+        false,
+        false
+      ],
+      "same_steps": true,
+      "same_tools": true,
+      "same_verdict": true,
+      "same_answer": true
+    },
+    {
+      "task": "T-03",
+      "steps": [
+        1,
+        1,
+        1
+      ],
+      "tools": [
+        [],
+        [],
+        []
+      ],
+      "verdicts": [
+        false,
+        false,
+        false
+      ],
+      "same_steps": true,
+      "same_tools": true,
+      "same_verdict": true,
+      "same_answer": true
+    },
+    {
+      "task": "T-04",
+      "steps": [
+        1,
+        1,
+        1
+      ],
+      "tools": [
+        [],
+        [],
+        []
+      ],
+      "verdicts": [
+        false,
+        false,
+        false
+      ],
+      "same_steps": true,
+      "same_tools": true,
+      "same_verdict": true,
+      "same_answer": true
+    },
+    {
+      "task": "T-05",
+      "steps": [
+        2,
+        2,
+        2
+      ],
+      "tools": [
+        [
+          "search_services"
+        ],
+        [
+          "search_services"
+        ],
+        [
+          "search_services"
+        ]
+      ],
+      "verdicts": [
+        false,
+        false,
+        false
+      ],
+      "same_steps": true,
+      "same_tools": true,
+      "same_verdict": true,
+      "same_answer": true
+    },
+    {
+      "task": "T-06",
+      "steps": [
+        2,
+        2,
+        2
+      ],
+      "tools": [
+        [
+          "search_services"
+        ],
+        [
+          "search_services"
+        ],
+        [
+          "search_services"
+        ]
+      ],
+      "verdicts": [
+        true,
+        true,
+        true
+      ],
+      "same_steps": true,
+      "same_tools": true,
+      "same_verdict": true,
+      "same_answer": true
+    },
+    {
+      "task": "T-07",
+      "steps": [
+        1,
+        1,
+        1
+      ],
+      "tools": [
+        [],
+        [],
+        []
+      ],
+      "verdicts": [
+        false,
+        false,
+        false
+      ],
+      "same_steps": true,
+      "same_tools": true,
+      "same_verdict": true,
+      "same_answer": true
+    },
+    {
+      "task": "T-08",
+      "steps": [
+        1,
+        1,
+        1
+      ],
+      "tools": [
+        [],
+        [],
+        []
+      ],
+      "verdicts": [
+        true,
+        true,
+        true
+      ],
+      "same_steps": true,
+      "same_tools": true,
+      "same_verdict": true,
+      "same_answer": true
+    },
+    {
+      "task": "T-09",
+      "steps": [
+        2,
+        2,
+        2
+      ],
+      "tools": [
+        [
+          "search_services"
+        ],
+        [
+          "search_services"
+        ],
+        [
+          "search_services"
+        ]
+      ],
+      "verdicts": [
+        false,
+        false,
+        false
+      ],
+      "same_steps": true,
+      "same_tools": true,
+      "same_verdict": true,
+      "same_answer": true
+    },
+    {
+      "task": "T-10",
+      "steps": [
+        2,
+        2,
+        2
+      ],
+      "tools": [
+        [
+          "search_services"
+        ],
+        [
+          "search_services"
+        ],
+        [
+          "search_services"
+        ]
+      ],
+      "verdicts": [
+        false,
+        false,
+        false
+      ],
+      "same_steps": true,
+      "same_tools": true,
+      "same_verdict": true,
+      "same_answer": true
+    }
+  ]
+}
