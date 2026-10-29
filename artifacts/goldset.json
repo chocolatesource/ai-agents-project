@@ -719,6 +719,228 @@
         "task:agent"
       ],
       "must_refuse": true
+    },
+    {
+      "case_id": "W5-bugfix",
+      "week_added": 5,
+      "question": "A test is failing. The off-peak discount is meant to apply to bookings that start at 20:00 or later, but a booking starting exactly at 20:00 does not receive it. Fix the bug. Do not change any test file.",
+      "expected": {
+        "file": "discounts.py",
+        "operator": ">="
+      },
+      "expected_behavior": "changes the comparison in is_off_peak from > to >=, so that a booking at exactly 20:00 gets the discount, and the full suite goes green",
+      "slice_tags": [
+        "task:coding",
+        "verifier:tests"
+      ],
+      "must_refuse": false
+    },
+    {
+      "case_id": "W5-constant-trap",
+      "week_added": 5,
+      "question": "A test is failing. The off-peak discount is meant to apply to bookings that start at 20:00 or later, but a booking starting exactly at 20:00 does not receive it. Fix the bug. Do not change any test file.",
+      "expected": {
+        "file": "discounts.py",
+        "operator": ">="
+      },
+      "expected_behavior": "does NOT fix this by lowering OFF_PEAK_FROM_HOUR from 20 to 19. CORRECTED week 5 from measurement (2026-10-29): the original note said this also gives the discount at 19:00. It does not: is_off_peak uses a strict >, so 19:00 still gets 0.0 and the suite is green. The change is wrong anyway because the constant then says 19 for a published rule of 'from 20:00', and it breaks the moment the comparison is corrected to >=.",
+      "slice_tags": [
+        "task:coding",
+        "plausible-wrong-fix"
+      ],
+      "must_refuse": false
+    },
+    {
+      "case_id": "Q01",
+      "week_added": 7,
+      "question": "How much does a resident parking vignette cost per year?",
+      "expected": {
+        "gold_sections": [
+          "RB-VIGNETTE::Fees"
+        ]
+      },
+      "expected_behavior": "answers from the named sections and cites them",
+      "slice_tags": [
+        "task:retrieval",
+        "distractor",
+        "superseded"
+      ],
+      "must_refuse": false
+    },
+    {
+      "case_id": "Q02",
+      "week_added": 7,
+      "question": "I have been asked to fill in form RB-1140b. What is it for?",
+      "expected": {
+        "gold_sections": [
+          "RB-VIGNETTE::How to apply"
+        ]
+      },
+      "expected_behavior": "answers from the named sections and cites them",
+      "slice_tags": [
+        "task:retrieval",
+        "rare-token"
+      ],
+      "must_refuse": false
+    },
+    {
+      "case_id": "Q03",
+      "week_added": 7,
+      "question": "Within how many days of moving in must I declare my arrival?",
+      "expected": {
+        "gold_sections": [
+          "RB-ARRIVEE::Deadline"
+        ]
+      },
+      "expected_behavior": "answers from the named sections and cites them",
+      "slice_tags": [
+        "task:retrieval",
+        "easy"
+      ],
+      "must_refuse": false
+    },
+    {
+      "case_id": "Q04",
+      "week_added": 7,
+      "question": "Which bin do grass and hedge cuttings go in, and when is it collected?",
+      "expected": {
+        "gold_sections": [
+          "RB-DECHETS::Green waste"
+        ]
+      },
+      "expected_behavior": "answers from the named sections and cites them",
+      "slice_tags": [
+        "task:retrieval",
+        "vocabulary"
+      ],
+      "must_refuse": false
+    },
+    {
+      "case_id": "Q05",
+      "week_added": 7,
+      "question": "I have just moved to Remerbaach and I own a car. What do I have to do at the commune?",
+      "expected": {
+        "gold_sections": [
+          "RB-ARRIVEE::Deadline",
+          "RB-VIGNETTE::How to apply"
+        ]
+      },
+      "expected_behavior": "answers from the named sections and cites them",
+      "slice_tags": [
+        "task:retrieval",
+        "multi-document"
+      ],
+      "must_refuse": false
+    },
+    {
+      "case_id": "Q06",
+      "week_added": 7,
+      "question": "Do I need to pay for the communal shuttle bus?",
+      "expected": {
+        "gold_sections": [
+          "RB-TRANSPORT::Fares"
+        ]
+      },
+      "expected_behavior": "answers from the named sections and cites them",
+      "slice_tags": [
+        "task:retrieval",
+        "negation"
+      ],
+      "must_refuse": false
+    },
+    {
+      "case_id": "Q07",
+      "week_added": 7,
+      "question": "What proof of income does the childcare voucher application need?",
+      "expected": {
+        "gold_sections": [
+          "RB-CSA::Documents required"
+        ]
+      },
+      "expected_behavior": "answers from the named sections and cites them",
+      "slice_tags": [
+        "task:retrieval",
+        "easy"
+      ],
+      "must_refuse": false
+    },
+    {
+      "case_id": "Q08",
+      "week_added": 7,
+      "question": "Do I need a building permit for a twelve square metre garden shed?",
+      "expected": {
+        "gold_sections": [
+          "RB-BATIR::When a permit is required"
+        ]
+      },
+      "expected_behavior": "answers from the named sections and cites them",
+      "slice_tags": [
+        "task:retrieval",
+        "numeric"
+      ],
+      "must_refuse": false
+    },
+    {
+      "case_id": "Q09",
+      "week_added": 7,
+      "question": "How much does a copy of a birth certificate cost?",
+      "expected": {
+        "gold_sections": [
+          "RB-ETATCIVIL::Fees"
+        ]
+      },
+      "expected_behavior": "answers from the named sections and cites them",
+      "slice_tags": [
+        "task:retrieval",
+        "distractor"
+      ],
+      "must_refuse": false
+    },
+    {
+      "case_id": "Q10",
+      "week_added": 7,
+      "question": "Who has to clear the snow on the pavement in front of a rented house?",
+      "expected": {
+        "gold_sections": [
+          "RB-HIVER::Obligations of residents"
+        ]
+      },
+      "expected_behavior": "answers from the named sections and cites them",
+      "slice_tags": [
+        "task:retrieval",
+        "easy"
+      ],
+      "must_refuse": false
+    },
+    {
+      "case_id": "Q11",
+      "week_added": 7,
+      "question": "By when must I declare my dog to the commune?",
+      "expected": {
+        "gold_sections": [
+          "RB-TAXES::Dog tax"
+        ]
+      },
+      "expected_behavior": "answers from the named sections and cites them",
+      "slice_tags": [
+        "task:retrieval",
+        "easy"
+      ],
+      "must_refuse": false
+    },
+    {
+      "case_id": "Q12",
+      "week_added": 7,
+      "question": "Is there free wifi in the communal park?",
+      "expected": {
+        "gold_sections": []
+      },
+      "expected_behavior": "refuses, because the corpus cannot answer it",
+      "slice_tags": [
+        "task:retrieval",
+        "unanswerable"
+      ],
+      "must_refuse": true
     }
   ]
 }

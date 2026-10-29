@@ -778,3 +778,419 @@ Not done: I did not establish why T-02 and T-03 searched on the
 recording's machine and refused on mine (see section 3); everything else
 about the 7/10 versus 3/10 gap is explained there.
 
+
+
+---
+
+# Week 5: a planner, an executor, and a second agent
+
+## Week 5
+
+**Run conditions.** model: qwen2.5:7b | framework: Pydantic AI 2.63.0 | Ollama
+0.30.8, served locally, one request at a time | temperature: 0.0 | runs per
+architecture: 3 | date: 2026-10-29 | table from: my own live runs
+(`artifacts/week05_architectures.json`, log in `artifacts/logs/week05_live.log`).
+The recording (2026-08-11) is shown beside it and no number below is taken
+from it unless it says so.
+
+### 1. The plan schema
+
+`Plan` is `goal: str`, `steps: list[str]`, `suspect_file: str`. Flat.
+
+I did try the nested `Step(tool, argument, why)` list, five trials, under the
+default tool-call output (`artifacts/week05_checkpoint1.txt`, section 5):
+**0 of 5 returned, every one `Exceeded maximum output retries (3)`.** But the
+flat `Plan` under the same mode also returned **0 of 5** that run, and 3 of 10
+in an earlier sweep (`artifacts/week05_planner_modes.json`). So on this stack
+I could **not reproduce the brief's contrast** (flat works, nested does not):
+both fail, flat only less often. The failure is not about nesting here. A
+retry feedback dump shows the model answering with neither text nor a tool
+call ("Please return text or include your response in a tool call").
+
+What I shipped, measured over 10 trials each (`week05_planner_modes.json`):
+
+| output mode | prompt | returned | passes `validate_plan` | names discounts.py |
+|---|---|---|---|---|
+| tool call (default) | base | 3/10 | 0 | 1 |
+| tool call (default) | + file list | 3/10 | 3 | 3 |
+| native JSON | + file list | 10/10 | 9 | 6 |
+| **prompted JSON** | + file list | **10/10** | **10** | **9** |
+
+I use `PromptedOutput` for planner, fixer and reviewer, and I list the real
+file names in the planner prompt. That is a **deviation from the starter**,
+commented at the top of `agents.py`. My first full live run with the default
+output mode crashed on 5 of 6 planned runs (`artifacts/week05_architectures_toolmode.json`,
+B 0/3, C 0/3); the table in section 3 is the run after the change.
+
+### 2. The validator
+
+| check | what it catches |
+|---|---|
+| step count in 2..6 | an empty or one-line plan, or one that wanders |
+| `suspect_file` in the four known files | a hallucinated file (`booking_service.py`, `booking_model.py` and `booking_discounts.py` all appeared in the mode sweep) |
+| some step runs/verifies the tests | a plan with no way of knowing it worked |
+| no step edits a test | what `apply_fix` would refuse anyway, caught before any call |
+
+A deliberately broken plan (one step, `engine.py`, "edit tests/test_pricing.py")
+fails all four (`week05_checkpoint1.txt`, section 3). On a failed check my
+system **records the problems and carries on; it does not repair or refuse**,
+because the plan only feeds the fixer a file name and `apply_fix` is the real
+gate. That is a weak choice and I did not test the alternative. In the 6
+planned runs of the final table, `plan_ok` was true every time, so the
+validator never fired.
+
+### 3. The three-way table
+
+qwen2.5:7b, Pydantic AI 2.63.0, temperature 0, 3 runs each, 2026-10-29:
+
+| architecture | green | tokens (mean) | seconds (mean) | recorded 2026-08-11 (green, tokens, s) |
+|---|---|---|---|---|
+| A baseline | 1/3 | 20,700 | 21.1 | 0/3, 10,470, 40.1 |
+| B planner | 1/3 | 1,688 | 3.6 | 2/3, 1,751, 15.0 |
+| C planner + reviewer | 1/3 | 2,339 | 4.1 | 0/3, 3,441, 29.0 |
+
+Three runs each cannot separate these three: a single run flips any cell. What
+the data does support is the cost column. A spends **12 times the tokens of B**
+for the same green count, and its spread is large (11,581 to 50,519 tokens).
+
+What went wrong in the red runs, which is the more useful list:
+
+- B run 1 proposed `if booking.start_hour > 20:` to `>= 20` **in pricing.py**.
+  That is the duplicate in `discount_summary`, `apply_fix` accepted it, and the
+  suite stayed red. A correct edit in the wrong place.
+- B run 3 and C run 1 proposed a line that is not in the file; `apply_fix`
+  refused both (`REFUSED: that line does not appear in the file`).
+- A run 1 raised `UnexpectedModelBehavior`; A run 3 took 49 s and 50.5k tokens.
+
+### 4. Why the baseline fails
+
+Not model size: A, B and C use the same model, prompt style and endpoint. What
+changed is the **size of the action space and who checks it**. A may call
+`replace_line` on any line of any file at any time and must judge its own
+success; B/C may only emit one structured proposal that `apply_fix` validates
+and `run_tests` verifies. A's cost spread (11.6k to 50.5k tokens) is a loop
+with no bound on what it tries, which is the week 4 lesson again.
+
+### 5. The reviewer
+
+Verdicts in the final table's three C runs: **2 approve, 1 reject.** Run 1
+approved `is_off_peak(start_hour - 1)` ("changes the start_hour to match the
+test input") and only `apply_fix` stopped it. Run 2 rejected a constant change.
+Run 3 approved the correct `>=` and went green.
+
+I also handed the reviewer five patches directly, 5 times each
+(`artifacts/week05_reviewer_probe.json`):
+
+| patch | approve | reject |
+|---|---|---|
+| correct `>` to `>=` | 4/5 | 1/5 |
+| constant 20 to 19 | 0/5 | 5/5 |
+| special-case `== 20` | 0/5 | 5/5 |
+| edit the failing test's expected value | 0/5 | 5/5 |
+| nonsense `start_hour - 1` | **2/5** | 3/5 |
+
+It reliably catches the test edit and the special case, wrongly rejects the
+correct fix once in five, and **approves nonsense two times in five**.
+
+Extra cost: 651 tokens and 0.5 s per run (2,339 vs 1,688; 4.1 vs 3.6 s).
+Would I ship it: **not on this evidence.** In the live table it did not raise
+the green count (1/3 with and without it), and in the probe it approved
+nonsense 2 times in 5. But it did one thing the suite cannot: it rejected the
+constant-19 change 5 times in 5, a change that leaves the suite green. That is
+the case where it would earn its cost, a plausible edit the tests do not
+cover. I would change my mind with an uncovered-edit set on which the reviewer
+beats a no-reviewer pipeline, which I have not built.
+
+### 6. What my verifier cannot catch
+
+The suite goes green on a change that leaves a real bug. After the correct
+one-line fix, `pricing.discount_summary` for a 20:00 booking still returns
+**`'no discount'`**, because it carries its own copy of `> 20` and no test
+covers it (`artifacts/week05_verifier_blindspots.txt`; same result for the
+constant-19 and special-case variants). 16 of 16 pass. B run 1 went to exactly
+that duplicate and fixed the wrong copy. A green suite proves only that the
+cases somebody wrote still pass.
+
+**Gold set correction.** The starter's `W5-constant-trap` says lowering
+`OFF_PEAK_FROM_HOUR` to 19 "gives the discount to bookings at 19:00". I
+applied it: `is_off_peak` uses a strict `>`, so 19:00 still gets 0.0 and the
+suite is green. The change is wrong for another reason (the constant now says
+19 for a published rule of "from 20:00"). I corrected the case text in
+`artifacts/goldset.json` and in `01_compare.py`.
+
+### Homework: Task B, the refactor
+
+`02_task_b.py`, qwen2.5:7b, 2026-10-29. The start is the repository with the
+bug fixed, so the suite is green from the first line and "green" alone proves
+nothing. The verifier is the suite plus a structural check (no rate literal or
+bare `20` outside `discounts.py`; each rate once in it). The start state has
+**14 structural problems**, and the script asserts it is not already "done".
+
+| architecture | done | suite still green | problems left (mean of 3) | tokens | seconds |
+|---|---|---|---|---|---|
+| A baseline | 0/3 | 2/3 | 14.0 | 9,752 | 21.8 |
+| B planner | 0/3 | 2/3 | 12.3 | 14,343 | 17.4 |
+| C planner + reviewer | 0/3 | 2/3 | 13.0 | 16,878 | 23.1 |
+
+**The gap does not widen: nothing finishes.** B and C remove one or two
+problems on average; A removes none. Every architecture broke the suite in one
+run of three. The planner did not earn its cost on task B (47% more tokens than
+A for 1.7 problems fewer, and no completion), whereas on task A it was
+12 times cheaper than the baseline. My single-line proposal loop is the wrong
+shape for a refactor, so this is evidence about my harness at least as much as
+about planning.
+
+### Deferred
+
+- 3 runs per cell. Differences of one run are noise.
+- I never ran the optional "tell the fixer the constant is suspect" variant.
+- The reviewer probe patches are mine, not drawn from real fixer output.
+
+---
+
+# Week 6: memory, a stateless MCP server, and an A2A channel
+
+## Week 6
+
+**Run conditions.** MCP SDK: `mcp==2.0.0rc1` | specification revision: 2026-07-28
+| model: qwen2.5:7b | embedder: nomic-embed-text (week 7 search) | served
+locally | date: 2026-10-29.
+
+### 1. The handle
+
+Format: `case-` plus 12 random hex characters (`secrets.token_hex(6)`, 48
+bits); facts are `fact-` plus 12 hex. No counter anywhere.
+
+A guessable handle (`fact-0007`) would expose **how many facts exist** and let
+anyone who has seen one try `fact-0006`, which is a read of somebody else's
+data. A random one costs nothing and removes both.
+
+### 2. Conflict and retention
+
+- A write that contradicts an older fact: **overwrite**, one live fact per
+  (subject, kind), because `recall` then never has to cope with two
+  contradictory facts. It costs the history of what changed and when, and the
+  old handle stops resolving (`forget` on it returns false).
+- How long a record lives: **365 days** (`RETENTION_DAYS`). It is enforced
+  **at read time only**: `search` ignores older facts, but they stay in
+  `memory_store.json` until someone calls `forget`. So this is a retrieval
+  window, not deletion, and I should not call it a retention policy for a
+  service holding residents' data. I did not build a purge.
+
+### 3. What k costs
+
+Prompt tokens for the same question with k stored facts injected
+(`artifacts/week06_memory_eval.json`, qwen2.5:7b): k=0 56, k=1 65, k=3 81,
+k=6 115. About **9 to 10 tokens per fact**.
+
+At 400 facts for one subject the token cost per call is still capped by k, but
+my dense `search` **embeds every fact of the subject on every call**: 2.4 s
+against 0.1 s with 6 facts. It does not scale, and the fix (embed once at write
+time and store the vector) is not done.
+
+### 4. Memory off against memory on
+
+Six questions whose answer is a stored fact, one run each, temperature 0:
+
+| | model calls | tokens | correct |
+|---|---|---|---|
+| memory off (simulated user supplies the fact when the model declines) | 13 | 1,176 | 5/6 |
+| memory on (recall tool) | 12 | 2,960 | 6/6 |
+
+Memory on costs **2.5 times the tokens** (the tool schema and the extra round
+trip) for one more correct answer and about the same number of calls. The
+"turns" for memory off include a turn where a person supplies the fact, which
+is free in tokens and not free for the resident. Six questions, one run: I
+make no claim beyond direction.
+
+Two things I got wrong first and fixed: the first memory-on run scored 0/6
+because the model **never called the tool unless the system prompt told it to**,
+and my first k measurement returned 56 tokens for every k because the generic
+query fell below the similarity threshold and injected nothing. Both earlier
+outputs were discarded.
+
+### 5. The protocol, at the wire
+
+`artifacts/week06_stateless.txt`, identical request bytes to both servers:
+
+| server mode | status | Mcp-Session-Id | answered |
+|---|---|---|---|
+| `stateless_http=True` | 200 | none | yes |
+| `stateless_http=False` | 400 | present | no |
+
+The session-mode server's error, quoted exactly:
+
+`{"jsonrpc":"2.0","id":null,"error":{"code":-32600,"message":"Bad Request: Missing session ID"}}`
+
+All three checks in `02_stateless.py` pass: stateless answers, stateless issues
+no session id, and the **identical request is refused in session mode**. A
+trap I hit on the way: when I added the `MCP-Protocol-Version` and `Mcp-Method`
+headers to the raw request, the session-mode server answered **200** too,
+because the v2 SDK serves modern self-describing requests whatever
+`stateless_http` says. That version of the third check failed, which is how I
+know it can fail. The shipped request is the starter's header set.
+
+Why the two-server handle demonstration proves nothing on its own: the state is
+in `memory_store.json` and each call opens a fresh connection, so it would
+resolve identically under the old session protocol. It shows that a file is a
+file. `01_mcp_client.py` does redeem a handle on a second instance and I count
+it as that, nothing more.
+
+Authorization (homework): each case records its owner and every case call must
+present the same `principal`; a wrong principal gets `ERROR: unknown case`,
+the same text as an unknown handle. **Weakness:** `principal` is a tool
+argument the model writes, so a hostile caller just claims it. A real
+deployment takes it from the authenticated transport. Week 12 attacks this.
+
+### 6. What forget does not reach
+
+It deletes the stored fact by handle and nothing else. It does not reach
+anything already quoted into a running conversation's messages, any trace or
+log that recorded the text (`artifacts/traces.jsonl`, server logs), a
+superseded fact (already overwritten), or a copy of `memory_store.json` made
+before the call. For a resident who asks to be deleted, "forgotten" is true of
+the store only, and I would have to say so.
+
+Also named, not fixed: two instances writing at the same moment both load,
+modify and save the whole file, so **the last writer silently wins and the
+other's fact is lost.** There is no lock.
+
+### Homework: the A2A channel
+
+`04_a2a_channel.py`, built from the three pieces in `03_a2a.py` plus a server
+task store with `tasks/get` and `tasks/cancel`. Seven checks pass
+(`artifacts/week06_a2a_channel.txt`): completed task returns text; an
+undeclared skill is decided locally and the server confirms it never saw the
+task (404); a failed task is a value with its error; a timeout keeps the task
+id; the kept id later collects the completed result; a non-text artifact is
+reported as a mismatch rather than stringified; a cancelled task stays
+cancelled (no late completion). One of my checks was first hollow (it read the
+parent process's dict while the server ran in a child) and I rewrote it to ask
+the server.
+
+### Deferred
+
+No purge job, no lock on the store, no vector cache. `principal` from an
+argument is a placeholder. A2A is A2A-style, not certified.
+
+---
+
+# Week 7: a RAG pipeline you can score
+
+## Week 7
+
+**Run conditions.** embedder: nomic-embed-text, 768 dimensions | chunker: 600
+body characters, overlap 80, k=5 (recall) | store: Chroma `EphemeralClient`,
+cosine | Ollama 0.30.8 | date: 2026-10-29 | corpus: 10 documents, 56
+sections.
+
+### 1. The chunker
+
+600 characters, overlap 80 (stride 520), cuts snapped to word boundaries, the
+section heading prepended to every chunk, `doc_id::section::n` as id. 84
+chunks (146 at 300/40, 57 at 1200/160). A coverage test shows 0 words lost at
+all three sizes. I kept 600 because it is the default and the sweep (below)
+shows it makes no difference to 10 of 11 dense ranks, so I have no evidence for
+any other number.
+
+### 2. The embedding model
+
+nomic-embed-text, 768 dimensions. One full indexing run: **0.74 s** for 84
+chunks at 600 (0.52 s for 57; 4.27 s for 146 chunks, but that was the first
+run and includes loading the model).
+
+### 3. The table
+
+`artifacts/week07_retrieval.json`, 600/80, rank of the first gold chunk and
+recall at 5 over sections:
+
+| qid | tags | dense rank | keyword rank | dense recall@5 | keyword recall@5 |
+|---|---|---|---|---|---|
+| Q01 | distractor, superseded | 1 | 2 | 1.0 | 1.0 |
+| Q02 | rare-token | 1 | 4 | 1.0 | 1.0 |
+| Q03 | easy | 1 | 1 | 1.0 | 1.0 |
+| Q04 | vocabulary | 1 | 1 | 1.0 | 1.0 |
+| Q05 | multi-document | **22** | **6** | **0.0** | **0.0** |
+| Q06 | negation | 1 | 16 | 1.0 | 0.0 |
+| Q07 | easy | 1 | 3 | 1.0 | 1.0 |
+| Q08 | numeric | 1 | 1 | 1.0 | 1.0 |
+| Q09 | distractor | 1 | 2 | 1.0 | 1.0 |
+| Q10 | easy | 1 | 1 | 1.0 | 1.0 |
+| Q11 | easy | 1 | 5 | 1.0 | 1.0 |
+| Q12 | unanswerable | - | - | - | - |
+
+`rank_of_first_gold` and `recall_at_k` were checked against a hand-worked
+example before use (a section split into three chunks counts once).
+
+### 4. Is rank one on ten of eleven good, or is the task easy
+
+The task is easy. Plain unweighted word counting puts the gold chunk in the top
+5 on 9 of 11 questions (all but Q05 and Q06), so a score of 10 of 11 for
+embeddings cannot distinguish a good pipeline from a lenient test set, and
+eleven questions on a synthetic 56-section corpus cannot either.
+
+### 5. The question that fails on both
+
+**Q05** ("I have just moved to Remerbaach and I own a car. What do I have to do
+at the commune?"). Gold is two sections in two documents
+(`RB-ARRIVEE::Deadline`, `RB-VIGNETTE::How to apply`). The question names
+neither topic, so no single chunk resembles it: dense ranks the first gold
+chunk 22nd, keyword 6th. **No chunk size fixes it:** dense rank is 17, 22, 20
+at 300, 600, 1200 and keyword 13, 6, 8, never inside the top 5. The question
+needs decomposing into two retrievals, which a chunker cannot do.
+
+Where dense beats keyword by the most: **Q06**, 1 against 16 ("Do I need to pay
+for the communal shuttle bus?" against a page that says travel is free of
+charge; almost no words in common, the meaning matches).
+
+### 6. The gold-set correction
+
+Q02's note said a rare exact token (`RB-1140b`) is where dense loses and
+keyword wins. Measured, it is the opposite: dense rank 1 at every size, keyword
+9, 4, 2 (`artifacts/week07_sweep.json`). Why keyword lost: my term-overlap
+scorer counts the rare token as one match, worth the same as "what" or "for"
+(no IDF weighting). I rewrote the note in `goldset.py` with the evidence and
+the date. I did **not** test BM25, so "a weighted scorer might win" is a
+guess and is marked as one. Cost of finding it: one table plus reading my own
+keyword scorer. I found a second false note the same way in week 5 (the 19
+o'clock trap).
+
+### Homework: the chunk sweep
+
+`02_sweep.py`, sizes 300/40, 600/80, 1200/160. By name, dense rank at 300 / 600 /
+1200:
+
+- **Moved:** Q05 only (17, 22, 20).
+- **Did not move (rank 1 at all three):** Q01, Q02, Q03, Q04, Q06, Q07, Q08,
+  Q09, Q10, Q11.
+- Keyword rank moved on 8 questions, e.g. Q06 11, 16, 4 and Q11 18, 5, 6 and
+  Q02 9, 4, 2: keyword search is the one that depends on chunk size.
+
+### Homework: wired into memory
+
+`app/memory.py` keeps `MemoryStore.search(subject, query, k)` and replaces its
+body with dense retrieval, scoped to the subject **before** scoring, with the
+week 6 keyword match as the fallback if the embedder is down. Proof:
+`python -m app.run --subject "A. Muller" "How do I register a new address?"`
+prints a `memory.search` line ending `1 hit(s)` (`artifacts/week07_wiring_proof.txt`).
+The MCP server now imports it.
+
+The minimum similarity is **0.50**, chosen from data
+(`artifacts/week07_memory_similarity.json`, 12 queries, 5 facts): queries
+with nothing relevant stored scored at most 0.448, the lowest relevant pair
+0.601, the right fact ranked first on 8 of 8. The margin is from a small
+sample.
+
+### What my retrieval measurement still cannot tell me
+
+Whether the retrieved text *answers* the question (no generation is scored),
+whether a superseded chunk sits above or below the gold one in the top 5
+(rank of the first gold chunk ignores what outranks it, and Q01 and Q09 are
+exactly the distractor cases), and whether 11 questions on a synthetic corpus
+say anything about real inputs.
+
+### Deferred
+
+Optional "split Q05 into two questions" experiment not run. No BM25
+comparison. `forget` and retention interact with the vector store only through
+the per-call re-embedding described in week 6.

@@ -14,5 +14,8 @@ description = "BPINFOR-132 project spine and the fourteen practical sessions bui
 requires-python = ">=3.10"
 dependencies = ["pydantic>=2.9,<3"]
 
+[project.optional-dependencies]
+weeks = ["pydantic-ai-slim[openai]>=2.27", "mcp==2.0.0rc1", "chromadb>=1.5", "pytest>=8.0"]
+
 [tool.setuptools]
-packages = ["project"]
+packages = ["project", "app"]
