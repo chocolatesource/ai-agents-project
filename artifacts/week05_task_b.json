@@ -1,0 +1,292 @@
+{
+  "start": {
+    "tests_green": true,
+    "structural_problems": [
+      "pricing.py still contains '10%'",
+      "pricing.py still contains '20%'",
+      "pricing.py still contains '15%'",
+      "pricing.py still contains '30%'",
+      "pricing.py still compares start_hour with a bare 20",
+      "report.py still contains '10%'",
+      "report.py still contains '20%'",
+      "report.py still contains '15%'",
+      "report.py still contains '30%'",
+      "report.py still compares start_hour with a bare 20",
+      "discounts.py has '0.10' 2 times (want 1)",
+      "discounts.py has '0.20' 2 times (want 1)",
+      "discounts.py has '0.15' 2 times (want 1)",
+      "discounts.py has '0.30' 2 times (want 1)"
+    ],
+    "done": false
+  },
+  "rows": [
+    {
+      "architecture": "A baseline",
+      "tests_green": true,
+      "structural_problems": [
+        "pricing.py still contains '10%'",
+        "pricing.py still contains '20%'",
+        "pricing.py still contains '15%'",
+        "pricing.py still contains '30%'",
+        "pricing.py still compares start_hour with a bare 20",
+        "report.py still contains '10%'",
+        "report.py still contains '20%'",
+        "report.py still contains '15%'",
+        "report.py still contains '30%'",
+        "report.py still compares start_hour with a bare 20",
+        "discounts.py has '0.10' 2 times (want 1)",
+        "discounts.py has '0.20' 2 times (want 1)",
+        "discounts.py has '0.15' 2 times (want 1)",
+        "discounts.py has '0.30' 2 times (want 1)"
+      ],
+      "done": false,
+      "tokens": 13182,
+      "edits": null,
+      "seconds": 28.3
+    },
+    {
+      "architecture": "B planner",
+      "tests_green": true,
+      "structural_problems": [
+        "pricing.py still contains '20%'",
+        "pricing.py still contains '15%'",
+        "pricing.py still contains '30%'",
+        "report.py still contains '10%'",
+        "report.py still contains '20%'",
+        "report.py still contains '15%'",
+        "report.py still contains '30%'",
+        "report.py still compares start_hour with a bare 20",
+        "discounts.py has '0.10' 3 times (want 1)",
+        "discounts.py has '0.20' 3 times (want 1)",
+        "discounts.py has '0.15' 3 times (want 1)",
+        "discounts.py has '0.30' 3 times (want 1)"
+      ],
+      "done": false,
+      "tokens": 13783,
+      "edits": 4,
+      "log": [
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character.",
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character.",
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character.",
+        "pricing.py: applied",
+        "discounts.py: applied",
+        "discounts.py: applied",
+        "pricing.py: applied",
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character."
+      ],
+      "seconds": 14.7
+    },
+    {
+      "architecture": "C planner+reviewer",
+      "tests_green": true,
+      "structural_problems": [
+        "pricing.py still contains '20%'",
+        "pricing.py still contains '15%'",
+        "pricing.py still contains '30%'",
+        "pricing.py still compares start_hour with a bare 20",
+        "report.py still contains '10%'",
+        "report.py still contains '20%'",
+        "report.py still contains '15%'",
+        "report.py still contains '30%'",
+        "report.py still compares start_hour with a bare 20",
+        "discounts.py has '0.20' 2 times (want 1)",
+        "discounts.py has '0.15' 2 times (want 1)",
+        "discounts.py has '0.30' 2 times (want 1)"
+      ],
+      "done": false,
+      "tokens": 16756,
+      "edits": 4,
+      "log": [
+        "rejected discounts.py",
+        "pricing.py: applied",
+        "pricing.py: applied",
+        "discounts.py: applied",
+        "discounts.py: applied",
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character.",
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character.",
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character."
+      ],
+      "seconds": 24.5
+    },
+    {
+      "architecture": "A baseline",
+      "tests_green": false,
+      "structural_problems": [
+        "pricing.py still contains '10%'",
+        "pricing.py still contains '20%'",
+        "pricing.py still contains '15%'",
+        "pricing.py still contains '30%'",
+        "pricing.py still compares start_hour with a bare 20",
+        "report.py still contains '10%'",
+        "report.py still contains '20%'",
+        "report.py still contains '15%'",
+        "report.py still contains '30%'",
+        "report.py still compares start_hour with a bare 20",
+        "discounts.py has '0.10' 2 times (want 1)",
+        "discounts.py has '0.20' 2 times (want 1)",
+        "discounts.py has '0.15' 2 times (want 1)",
+        "discounts.py has '0.30' 2 times (want 1)"
+      ],
+      "done": false,
+      "tokens": 11873,
+      "edits": null,
+      "seconds": 24.0
+    },
+    {
+      "architecture": "B planner",
+      "tests_green": true,
+      "structural_problems": [
+        "pricing.py still contains '10%'",
+        "pricing.py still contains '20%'",
+        "pricing.py still contains '15%'",
+        "pricing.py still contains '30%'",
+        "pricing.py still compares start_hour with a bare 20",
+        "report.py still contains '10%'",
+        "report.py still contains '20%'",
+        "report.py still contains '15%'",
+        "report.py still contains '30%'",
+        "report.py still compares start_hour with a bare 20",
+        "discounts.py has '0.10' 2 times (want 1)",
+        "discounts.py has '0.20' 2 times (want 1)",
+        "discounts.py has '0.15' 2 times (want 1)",
+        "discounts.py has '0.30' 2 times (want 1)"
+      ],
+      "done": false,
+      "tokens": 13994,
+      "edits": 4,
+      "log": [
+        "discounts.py: REFUSED: that line does not appear in the file. It has to be copied character for character.",
+        "discounts.py: applied",
+        "discounts.py: applied",
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character.",
+        "discounts.py: applied",
+        "discounts.py: REFUSED: that line does not appear in the file. It has to be copied character for character.",
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character.",
+        "discounts.py: applied"
+      ],
+      "seconds": 20.5
+    },
+    {
+      "architecture": "C planner+reviewer",
+      "tests_green": false,
+      "structural_problems": [
+        "pricing.py still contains '10%'",
+        "pricing.py still contains '20%'",
+        "pricing.py still contains '15%'",
+        "pricing.py still contains '30%'",
+        "pricing.py still compares start_hour with a bare 20",
+        "report.py still contains '10%'",
+        "report.py still contains '20%'",
+        "report.py still contains '15%'",
+        "report.py still contains '30%'",
+        "report.py still compares start_hour with a bare 20",
+        "discounts.py has '0.10' 2 times (want 1)",
+        "discounts.py has '0.20' 2 times (want 1)",
+        "discounts.py has '0.15' 2 times (want 1)",
+        "discounts.py has '0.30' 2 times (want 1)"
+      ],
+      "done": false,
+      "tokens": 17144,
+      "edits": 5,
+      "log": [
+        "pricing.py: applied",
+        "discounts.py: applied",
+        "discounts.py: applied",
+        "priced.py: REFUSED: no such file: priced.py",
+        "discounts.py: applied",
+        "rejected pricing.py",
+        "pricing.py: applied",
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character."
+      ],
+      "seconds": 23.0
+    },
+    {
+      "architecture": "A baseline",
+      "tests_green": true,
+      "structural_problems": [
+        "pricing.py still contains '10%'",
+        "pricing.py still contains '20%'",
+        "pricing.py still contains '15%'",
+        "pricing.py still contains '30%'",
+        "pricing.py still compares start_hour with a bare 20",
+        "report.py still contains '10%'",
+        "report.py still contains '20%'",
+        "report.py still contains '15%'",
+        "report.py still contains '30%'",
+        "report.py still compares start_hour with a bare 20",
+        "discounts.py has '0.10' 2 times (want 1)",
+        "discounts.py has '0.20' 2 times (want 1)",
+        "discounts.py has '0.15' 2 times (want 1)",
+        "discounts.py has '0.30' 2 times (want 1)"
+      ],
+      "done": false,
+      "tokens": 4201,
+      "edits": null,
+      "seconds": 13.1
+    },
+    {
+      "architecture": "B planner",
+      "tests_green": false,
+      "structural_problems": [
+        "pricing.py still contains '15%'",
+        "pricing.py still contains '30%'",
+        "pricing.py still compares start_hour with a bare 20",
+        "report.py still contains '10%'",
+        "report.py still contains '20%'",
+        "report.py still contains '15%'",
+        "report.py still contains '30%'",
+        "report.py still compares start_hour with a bare 20",
+        "discounts.py has '0.20' 2 times (want 1)",
+        "discounts.py has '0.15' 2 times (want 1)",
+        "discounts.py has '0.30' 2 times (want 1)"
+      ],
+      "done": false,
+      "tokens": 15254,
+      "edits": 5,
+      "log": [
+        "pricing.py: applied",
+        "pricing.py: applied",
+        "pricing.py: applied",
+        "discounts.py: applied",
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character.",
+        "discounts.py: applied",
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character.",
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character."
+      ],
+      "seconds": 17.1
+    },
+    {
+      "architecture": "C planner+reviewer",
+      "tests_green": true,
+      "structural_problems": [
+        "pricing.py still contains '20%'",
+        "pricing.py still contains '15%'",
+        "pricing.py still contains '30%'",
+        "pricing.py still compares start_hour with a bare 20",
+        "report.py still contains '10%'",
+        "report.py still contains '20%'",
+        "report.py still contains '15%'",
+        "report.py still contains '30%'",
+        "report.py still compares start_hour with a bare 20",
+        "discounts.py has '0.10' 2 times (want 1)",
+        "discounts.py has '0.20' 2 times (want 1)",
+        "discounts.py has '0.15' 2 times (want 1)",
+        "discounts.py has '0.30' 2 times (want 1)"
+      ],
+      "done": false,
+      "tokens": 16734,
+      "edits": 2,
+      "log": [
+        "rejected discounts.py",
+        "rejected discounts.py",
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character.",
+        "pricing.py: applied",
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character.",
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character.",
+        "pricing.py: REFUSED: that line does not appear in the file. It has to be copied character for character.",
+        "discounts.py: applied"
+      ],
+      "seconds": 21.9
+    }
+  ]
+}

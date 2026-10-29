@@ -1,0 +1,20 @@
+    baseline run 1 raised UnexpectedModelBehavior
+  run 1 done: A baseline=red, B planner=red, C planner+reviewer=red
+  run 2 done: A baseline=green, B planner=green, C planner+reviewer=red
+  run 3 done: A baseline=red, B planner=red, C planner+reviewer=green
+architecture             green    tokens  seconds
+--------------------------------------------------
+A baseline               1/3       20700     21.1
+B planner                1/3        1688      3.6
+C planner+reviewer       1/3        2339      4.1
+
+what each architecture proposed:
+  [RED  ] B planner            pricing.py: if booking.start_hour > 20: -> if booking.start_hour
+  [RED  ] C planner+reviewer   discounts.py: is_off_peak(start_hour) else 0.0) -> is_off_peak(s  reviewer=approve
+  [green] B planner            discounts.py: return start_hour > OFF_PEAK_FROM_HOUR -> return s
+  [RED  ] C planner+reviewer   discounts.py: return 0.20 if is_off_peak(booking.start_hour) els  reviewer=reject
+  [RED  ] B planner            discounts.py: return is_off_peak(booking.start_hour) else 0.0 ->
+  [green] C planner+reviewer   discounts.py: return start_hour > OFF_PEAK_FROM_HOUR -> return s  reviewer=approve
+
+gold set loaded from: own
+gold set now holds 46 cases

@@ -1,0 +1,104 @@
+{
+  "rows": [
+    {
+      "architecture": "A baseline",
+      "green": false,
+      "tool_calls": 8,
+      "tokens": 4801,
+      "seconds": 5.7
+    },
+    {
+      "architecture": "B planner",
+      "green": false,
+      "plan_ok": false,
+      "plan_problems": [
+        "no step runs the tests"
+      ],
+      "applied": "applied",
+      "verdict": null,
+      "verdict_reason": null,
+      "fix": "booking.py: @dataclass(frozen=True) -> @dataclass(frozen=True, eq=True)",
+      "tokens": 2517,
+      "seconds": 6.7
+    },
+    {
+      "architecture": "C planner+reviewer",
+      "green": false,
+      "plan_ok": null,
+      "plan_problems": [],
+      "applied": "crashed",
+      "verdict": null,
+      "verdict_reason": null,
+      "fix": null,
+      "error": "UnexpectedModelBehavior",
+      "tokens": 0,
+      "seconds": 4.3
+    },
+    {
+      "architecture": "A baseline",
+      "green": true,
+      "tool_calls": 10,
+      "tokens": 6540,
+      "seconds": 5.3
+    },
+    {
+      "architecture": "B planner",
+      "green": false,
+      "plan_ok": null,
+      "plan_problems": [],
+      "applied": "crashed",
+      "verdict": null,
+      "verdict_reason": null,
+      "fix": null,
+      "error": "UnexpectedModelBehavior",
+      "tokens": 0,
+      "seconds": 4.5
+    },
+    {
+      "architecture": "C planner+reviewer",
+      "green": false,
+      "plan_ok": null,
+      "plan_problems": [],
+      "applied": "crashed",
+      "verdict": null,
+      "verdict_reason": null,
+      "fix": null,
+      "error": "UnexpectedModelBehavior",
+      "tokens": 0,
+      "seconds": 7.0
+    },
+    {
+      "architecture": "A baseline",
+      "green": false,
+      "tool_calls": 28,
+      "tokens": 35793,
+      "seconds": 42.2
+    },
+    {
+      "architecture": "B planner",
+      "green": false,
+      "plan_ok": null,
+      "plan_problems": [],
+      "applied": "crashed",
+      "verdict": null,
+      "verdict_reason": null,
+      "fix": null,
+      "error": "UnexpectedModelBehavior",
+      "tokens": 0,
+      "seconds": 13.6
+    },
+    {
+      "architecture": "C planner+reviewer",
+      "green": false,
+      "plan_ok": null,
+      "plan_problems": [],
+      "applied": "crashed",
+      "verdict": null,
+      "verdict_reason": null,
+      "fix": null,
+      "error": "UnexpectedModelBehavior",
+      "tokens": 0,
+      "seconds": 6.2
+    }
+  ]
+}

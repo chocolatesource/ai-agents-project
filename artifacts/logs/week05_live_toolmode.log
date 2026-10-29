@@ -1,0 +1,19 @@
+    C planner+reviewer run 1 raised UnexpectedModelBehavior: Exceeded maximum output retries (3)
+  run 1 done: A baseline=red, B planner=red, C planner+reviewer=red
+    B planner run 2 raised UnexpectedModelBehavior: Exceeded maximum output retries (3)
+    C planner+reviewer run 2 raised UnexpectedModelBehavior: Exceeded maximum output retries (3)
+  run 2 done: A baseline=green, B planner=red, C planner+reviewer=red
+    B planner run 3 raised UnexpectedModelBehavior: Exceeded maximum output retries (3)
+    C planner+reviewer run 3 raised UnexpectedModelBehavior: Exceeded maximum output retries (3)
+  run 3 done: A baseline=red, B planner=red, C planner+reviewer=red
+architecture             green    tokens  seconds
+--------------------------------------------------
+A baseline               1/3       15711     17.7
+B planner                0/3         839      8.3
+C planner+reviewer       0/3           0      5.8
+
+what each architecture proposed:
+  [RED  ] B planner            booking.py: @dataclass(frozen=True) -> @dataclass(frozen=True, e
+
+gold set loaded from: own
+gold set now holds 46 cases

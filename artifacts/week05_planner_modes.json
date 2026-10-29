@@ -1,0 +1,38 @@
+{
+  "base/tool": {
+    "returned": 3,
+    "valid_plan": 0,
+    "suspect_discounts": 1,
+    "n": 10
+  },
+  "base/native": {
+    "returned": 10,
+    "valid_plan": 3,
+    "suspect_discounts": 1,
+    "n": 10
+  },
+  "base/prompted": {
+    "returned": 6,
+    "valid_plan": 1,
+    "suspect_discounts": 0,
+    "n": 10
+  },
+  "with-files/tool": {
+    "returned": 3,
+    "valid_plan": 3,
+    "suspect_discounts": 3,
+    "n": 10
+  },
+  "with-files/native": {
+    "returned": 10,
+    "valid_plan": 9,
+    "suspect_discounts": 6,
+    "n": 10
+  },
+  "with-files/prompted": {
+    "returned": 10,
+    "valid_plan": 10,
+    "suspect_discounts": 9,
+    "n": 10
+  }
+}

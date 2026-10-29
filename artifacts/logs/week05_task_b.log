@@ -1,0 +1,9 @@
+verifier on the starting repo: True 14 problems
+  run 1 [('A', False, True, 14), ('B', False, True, 12), ('C', False, True, 12)]
+  run 2 [('A', False, False, 14), ('B', False, True, 14), ('C', False, False, 14)]
+  run 3 [('A', False, True, 14), ('B', False, False, 11), ('C', False, True, 13)]
+
+architecture             done  tests   tokens   secs
+A baseline                0/3    2/3     9752   21.8
+B planner                 0/3    2/3    14343   17.4
+C planner+reviewer        0/3    2/3    16878   23.1
