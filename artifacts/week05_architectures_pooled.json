@@ -1,0 +1,32 @@
+{
+  "batches": 2,
+  "pooled": {
+    "A baseline": {
+      "runs": 6,
+      "green": 2,
+      "tokens_mean_all": 16523,
+      "tokens_mean_completed": 19827,
+      "n_completed": 5,
+      "seconds_mean": 19.7,
+      "crashed": 1
+    },
+    "B planner": {
+      "runs": 6,
+      "green": 2,
+      "tokens_mean_all": 1700,
+      "tokens_mean_completed": 1700,
+      "n_completed": 6,
+      "seconds_mean": 4.6,
+      "crashed": 0
+    },
+    "C planner+reviewer": {
+      "runs": 6,
+      "green": 3,
+      "tokens_mean_all": 2360,
+      "tokens_mean_completed": 2360,
+      "n_completed": 6,
+      "seconds_mean": 4.6,
+      "crashed": 0
+    }
+  }
+}

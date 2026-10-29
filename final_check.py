@@ -156,6 +156,23 @@ def main() -> int:
     check("DECISIONS Task B 0/3 done each: no row in the saved file is done",
           len(tb) == 9 and sum(r["done"] for r in tb) == 0 and "| 0/3 |" in dn)
 
+    print("== optional experiments and pooled week 5")
+    pooled = json.loads((ROOT / "artifacts/week05_architectures_pooled.json").read_text(encoding="utf-8"))["pooled"]
+    check("pooled week 5: 2/6, 2/6, 3/6 green and DECISIONS quotes them",
+          [pooled[a]["green"] for a in ("A baseline", "B planner", "C planner+reviewer")] == [2, 2, 3]
+          and "| 2/6 |" in dn and "| 3/6 |" in dn)
+    sc = json.loads((ROOT / "artifacts/week05_suspect_constant.json").read_text(encoding="utf-8"))
+    check("suspect-constant: 6 trials, 6 touched the constant, 5 green, reviewer rejected 3",
+          len(sc) == 6 and sum(r["touches_constant"] for r in sc) == 6
+          and sum(r["suite_green"] for r in sc) == 5 and sum(r["reviewer"] == "reject" for r in sc) == 3)
+    sp = json.loads((ROOT / "artifacts/week07_split_q05.json").read_text(encoding="utf-8"))
+    check("Q05 split: dense never reaches recall@5 above 0 (negative result as written)",
+          all(sp[f"dense@{n}"]["split_recall5"] == 0.0 for n in (300, 600, 1200)))
+    cw = (ROOT / "artifacts/week06_concurrent_writes.txt").read_text(encoding="utf-8")
+    found = [int(x) for x in re.findall(r"found (\d+)", cw)]
+    check("concurrent writes: every saved run lost updates (found < 80) and crashed a reader",
+          len(found) == 3 and all(f < 80 for f in found) and cw.count("JSONDecodeError") == 3, str(found))
+
     print("== git")
     rc, out = run(["git", "status", "--short"])
     check("working tree is clean (everything committed)", out.strip() == "", out[:200])

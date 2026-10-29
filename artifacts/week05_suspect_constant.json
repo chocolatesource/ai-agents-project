@@ -1,0 +1,50 @@
+[
+  {
+    "trial": 1,
+    "fix": "discounts.py: OFF_PEAK_FROM_HOUR = 20 -> OFF_PEAK_FROM_HOUR = 20 + 1",
+    "touches_constant": true,
+    "reviewer": "reject",
+    "applied": "applied",
+    "suite_green": false
+  },
+  {
+    "trial": 2,
+    "fix": "discounts.py: OFF_PEAK_FROM_HOUR = 20 -> OFF_PEAK_FROM_HOUR = 19",
+    "touches_constant": true,
+    "reviewer": "reject",
+    "applied": "applied",
+    "suite_green": true
+  },
+  {
+    "trial": 3,
+    "fix": "discounts.py: OFF_PEAK_FROM_HOUR = 20 -> OFF_PEAK_FROM_HOUR = 20 - 1",
+    "touches_constant": true,
+    "reviewer": "reject",
+    "applied": "applied",
+    "suite_green": true
+  },
+  {
+    "trial": 4,
+    "fix": "discounts.py: OFF_PEAK_FROM_HOUR = 20 -> OFF_PEAK_FROM_HOUR = 19",
+    "touches_constant": true,
+    "reviewer": "approve",
+    "applied": "applied",
+    "suite_green": true
+  },
+  {
+    "trial": 5,
+    "fix": "discounts.py: OFF_PEAK_FROM_HOUR = 20 -> OFF_PEAK_FROM_HOUR = 20 - 1",
+    "touches_constant": true,
+    "reviewer": "approve",
+    "applied": "applied",
+    "suite_green": true
+  },
+  {
+    "trial": 6,
+    "fix": "discounts.py: OFF_PEAK_FROM_HOUR = 20 -> OFF_PEAK_FROM_HOUR = 20 - 1",
+    "touches_constant": true,
+    "reviewer": "approve",
+    "applied": "applied",
+    "suite_green": true
+  }
+]

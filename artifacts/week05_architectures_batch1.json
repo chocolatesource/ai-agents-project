@@ -1,0 +1,97 @@
+{
+  "rows": [
+    {
+      "architecture": "A baseline",
+      "green": false,
+      "tool_calls": 0,
+      "tokens": 0,
+      "seconds": 8.3
+    },
+    {
+      "architecture": "B planner",
+      "green": false,
+      "plan_ok": true,
+      "plan_problems": [],
+      "applied": "applied",
+      "verdict": null,
+      "verdict_reason": null,
+      "fix": "pricing.py: if booking.start_hour > 20: -> if booking.start_hour >= 20:",
+      "tokens": 1708,
+      "seconds": 3.4
+    },
+    {
+      "architecture": "C planner+reviewer",
+      "green": false,
+      "plan_ok": true,
+      "plan_problems": [],
+      "applied": "REFUSED: that line does not appear in the file. It has to be copied character for character.",
+      "verdict": "approve",
+      "verdict_reason": "Changes the start_hour to match the test input.",
+      "fix": "discounts.py: is_off_peak(start_hour) else 0.0) -> is_off_peak(start_hour - 1) else 0.0))",
+      "tokens": 2339,
+      "seconds": 4.2
+    },
+    {
+      "architecture": "A baseline",
+      "green": true,
+      "tool_calls": 14,
+      "tokens": 11581,
+      "seconds": 5.7
+    },
+    {
+      "architecture": "B planner",
+      "green": true,
+      "plan_ok": true,
+      "plan_problems": [],
+      "applied": "applied",
+      "verdict": null,
+      "verdict_reason": null,
+      "fix": "discounts.py: return start_hour > OFF_PEAK_FROM_HOUR -> return start_hour >= OFF_PEAK_FROM_HOUR",
+      "tokens": 1665,
+      "seconds": 3.3
+    },
+    {
+      "architecture": "C planner+reviewer",
+      "green": false,
+      "plan_ok": true,
+      "plan_problems": [],
+      "applied": "not attempted",
+      "verdict": "reject",
+      "verdict_reason": "Changes the constant value without addressing the logical issue.",
+      "fix": "discounts.py: return 0.20 if is_off_peak(booking.start_hour) else 0.0 -> return OFF_PEAK_RATE if is_off_peak(booking.start_hour) else 0.0",
+      "tokens": 2351,
+      "seconds": 4.0
+    },
+    {
+      "architecture": "A baseline",
+      "green": false,
+      "tool_calls": 32,
+      "tokens": 50519,
+      "seconds": 49.3
+    },
+    {
+      "architecture": "B planner",
+      "green": false,
+      "plan_ok": true,
+      "plan_problems": [],
+      "applied": "REFUSED: that line does not appear in the file. It has to be copied character for character.",
+      "verdict": null,
+      "verdict_reason": null,
+      "fix": "discounts.py: return is_off_peak(booking.start_hour) else 0.0 -> return 1 if is_off_peak(booking.start_hour) else 0.0",
+      "tokens": 1693,
+      "seconds": 4.2
+    },
+    {
+      "architecture": "C planner+reviewer",
+      "green": true,
+      "plan_ok": true,
+      "plan_problems": [],
+      "applied": "applied",
+      "verdict": "approve",
+      "verdict_reason": "Changes the comparison operator to match the intended logic based on the test failure.",
+      "fix": "discounts.py: return start_hour > OFF_PEAK_FROM_HOUR -> return start_hour >= OFF_PEAK_FROM_HOUR",
+      "tokens": 2328,
+      "seconds": 4.2
+    }
+  ]
+}

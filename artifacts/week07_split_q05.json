@@ -1,0 +1,39 @@
+{
+  "dense@300": {
+    "whole_rank": 17,
+    "whole_recall5": 0.0,
+    "split_rank": 18,
+    "split_recall5": 0.0
+  },
+  "keyword@300": {
+    "whole_rank": 13,
+    "whole_recall5": 0.0,
+    "split_rank": 2,
+    "split_recall5": 0.5
+  },
+  "dense@600": {
+    "whole_rank": 22,
+    "whole_recall5": 0.0,
+    "split_rank": 27,
+    "split_recall5": 0.0
+  },
+  "keyword@600": {
+    "whole_rank": 6,
+    "whole_recall5": 0.0,
+    "split_rank": 3,
+    "split_recall5": 0.5
+  },
+  "dense@1200": {
+    "whole_rank": 20,
+    "whole_recall5": 0.0,
+    "split_rank": 25,
+    "split_recall5": 0.0
+  },
+  "keyword@1200": {
+    "whole_rank": 8,
+    "whole_recall5": 0.0,
+    "split_rank": 7,
+    "split_recall5": 0.0
+  },
+  "cost": "2 query embeddings instead of 1; the split itself was written by hand"
+}

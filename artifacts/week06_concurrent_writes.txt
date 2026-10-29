@@ -1,0 +1,15 @@
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+expected 80 facts, found 41 (A 33/40, B 8/40)
+LOST UPDATES
+-- run 1
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+expected 80 facts, found 40 (A 39/40, B 1/40)
+LOST UPDATES
+-- run 2
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+expected 80 facts, found 40 (A 11/40, B 29/40)
+LOST UPDATES
+-- run 3

@@ -1,0 +1,19 @@
+  run 1 done: A baseline=green, B planner=red, C planner+reviewer=red
+  run 2 done: A baseline=red, B planner=red, C planner+reviewer=green
+  run 3 done: A baseline=red, B planner=green, C planner+reviewer=green
+architecture             green    tokens  seconds
+--------------------------------------------------
+A baseline               1/3       12345     18.4
+B planner                1/3        1711      5.6
+C planner+reviewer       2/3        2381      5.2
+
+what each architecture proposed:
+  [RED  ] B planner            discounts.py: return 0.20 if is_off_peak(booking.start_hour) els
+  [RED  ] C planner+reviewer   discounts.py: return 0.20 if is_off_peak(booking.start_hour) els  reviewer=reject
+  [RED  ] B planner            discounts.py: return 0.20 if is_off_peak(booking.start_hour) els
+  [green] C planner+reviewer   discounts.py: return start_hour > OFF_PEAK_FROM_HOUR -> return s  reviewer=approve
+  [green] B planner            discounts.py: return 0.20 if is_off_peak(booking.start_hour) els
+  [green] C planner+reviewer   discounts.py: return 0.20 if is_off_peak(booking.start_hour) els  reviewer=approve
+
+gold set loaded from: own
+gold set now holds 58 cases

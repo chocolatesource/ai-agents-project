@@ -859,6 +859,22 @@ the data does support is the cost column. A's mean (20,700 tokens, 21.1 s)
 runs A averages about 31,000 tokens (11,581 and 50,519), roughly **18 times
 B's 1,688**, for the same green count. Either way the spread is large.
 
+**Second batch and pooled result.** I ran a second batch of 3 per architecture
+the same day (`artifacts/week05_architectures_batch2.json`: A 1/3, B 1/3, C 2/3).
+Pooled over 6 runs each (`artifacts/week05_architectures_pooled.json`):
+
+| architecture | green of 6 | tokens (mean, completed runs) | seconds (mean) |
+|---|---|---|---|
+| A baseline | 2/6 | 19,827 (5 completed; 1 crashed at 0) | 19.7 |
+| B planner | 2/6 | 1,700 | 4.6 |
+| C planner + reviewer | 3/6 | 2,360 | 4.6 |
+
+Still not separable: 2, 2 and 3 of 6 is within one run of each other. The cost
+gap is stable across batches, though: A uses about **11.7 times** B's tokens
+(19,827 against 1,700). The reviewer's verdicts over the 6 C runs were 4 approve
+and 2 reject; 3 of the 4 approved runs went green and both rejected runs ended
+red (a rejection applies nothing, so the suite stays red).
+
 What went wrong in the red runs, which is the more useful list:
 
 - B run 1 proposed `if booking.start_hour > 20:` to `>= 20` **in pricing.py**.
@@ -950,10 +966,22 @@ whereas on task A it was
 shape for a refactor, so this is evidence about my harness at least as much as
 about planning.
 
+### Optional: telling the fixer the constant is suspect
+
+`05_suspect_constant.py`, 6 trials, qwen2.5:7b, 2026-10-29
+(`artifacts/week05_suspect_constant.json`). The fixer proposed a change to
+`OFF_PEAK_FROM_HOUR` in **6 of 6** trials (`= 19` twice, `= 20 - 1` three times,
+`= 20 + 1` once). The brief says one of the reviewer and the suite should catch
+it. Measured: the **suite stayed green on 5 of 6** (only `20 + 1` fails it), so
+it catches almost none of them; the **reviewer rejected 3 of 6 and approved 3**,
+and it was inconsistent on identical diffs (`= 19` rejected once, approved
+once). Neither is a reliable catch. The five green ones are the same wrong
+fix that Entry 6 describes: right at 20:00, wrong as a statement of the rule.
+
 ### Deferred
 
-- 3 runs per cell. Differences of one run are noise.
-- I never ran the optional "tell the fixer the constant is suspect" variant.
+- 6 runs per cell (two batches of 3). Differences of one run are still noise.
+- (The optional "constant is suspect" variant is now run: see below.)
 - The reviewer probe patches are mine, not drawn from real fixer output.
 
 ---
@@ -1073,9 +1101,15 @@ superseded fact (already overwritten), or a copy of `memory_store.json` made
 before the call. For a resident who asks to be deleted, "forgotten" is true of
 the store only, and I would have to say so.
 
-Also named, not fixed: two instances writing at the same moment both load,
-modify and save the whole file, so **the last writer silently wins and the
-other's fact is lost.** There is no lock.
+Also named, not fixed, and now **demonstrated** (`07_concurrent_writes.py`,
+`artifacts/week06_concurrent_writes.txt`, 3 runs, 2 processes x 40 writes of
+different facts, load-modify-save per call as the server does, no lock):
+only **40 to 42 of 80 writes survived** in every run, and in each run one
+process also **crashed with `JSONDecodeError`**, because `save()` truncates the
+file before writing it and the other process read it empty. So there are two
+failures: lost updates, and torn reads that crash the caller. Both come from
+the same missing pieces (a lock around load-modify-save, and writing to a
+temporary file then renaming it). I did not fix either.
 
 ### Checkpoint 1 evidence
 
@@ -1223,6 +1257,18 @@ o'clock trap).
   (recall 0, 1, 0). Keyword search is the retriever that depends on chunk
   size.
 
+### Optional: splitting Q05 into two questions
+
+`04_split_q05.py` (`artifacts/week07_split_q05.json`): the two sub-questions are
+"I have just moved to Remerbaach..." and "I own a car...", retrieved separately
+and merged by interleaving. **It does not fix it for dense retrieval**: the
+first gold chunk moves from rank 17 to 18, 22 to 27 and 20 to 25 (300, 600,
+1200), recall@5 stays 0. Keyword search improves partly: rank 13 to 2 and 6 to
+3, recall@5 0.5 at 300 and 600, but nothing at 1200 (8 to 7, recall 0). Cost is
+two query embeddings instead of one, plus a hand-written split. I wrote the
+split by hand and it reuses the words "commune" and "Remerbaach", so this is a
+best case for keyword search and says little about an automatic splitter.
+
 ### Homework: wired into memory
 
 `app/memory.py` keeps `MemoryStore.search(subject, query, k)` and replaces its
@@ -1254,6 +1300,5 @@ It cannot tell me whether the retrieved text answers the question, whether a sup
 
 ### Deferred
 
-Optional "split Q05 into two questions" experiment not run. No BM25
-comparison. `forget` and retention interact with the vector store only through
+No BM25 comparison. `forget` and retention interact with the vector store only through
 the per-call re-embedding described in week 6.

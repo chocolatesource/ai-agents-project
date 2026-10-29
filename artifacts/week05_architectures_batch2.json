@@ -1,0 +1,97 @@
+{
+  "rows": [
+    {
+      "architecture": "A baseline",
+      "green": true,
+      "tool_calls": 16,
+      "tokens": 12258,
+      "seconds": 16.5
+    },
+    {
+      "architecture": "B planner",
+      "green": false,
+      "plan_ok": true,
+      "plan_problems": [],
+      "applied": "applied",
+      "verdict": null,
+      "verdict_reason": null,
+      "fix": "discounts.py: return 0.20 if is_off_peak(booking.start_hour) else 0.0 -> return 0.20 if is_off_peak(booking.start_hour) >= OFF_PEAK_FROM_HOUR else 0.0",
+      "tokens": 1702,
+      "seconds": 4.4
+    },
+    {
+      "architecture": "C planner+reviewer",
+      "green": false,
+      "plan_ok": true,
+      "plan_problems": [],
+      "applied": "not attempted",
+      "verdict": "reject",
+      "verdict_reason": "The change includes the failing input without addressing the logic error.",
+      "fix": "discounts.py: return 0.20 if is_off_peak(booking.start_hour) else 0.0 -> return 0.20 if is_off_peak(booking.start_hour) or booking.start_hour == OFF_PEAK_FROM_HOUR else 0.0",
+      "tokens": 2424,
+      "seconds": 5.0
+    },
+    {
+      "architecture": "A baseline",
+      "green": false,
+      "tool_calls": 16,
+      "tokens": 12831,
+      "seconds": 20.3
+    },
+    {
+      "architecture": "B planner",
+      "green": false,
+      "plan_ok": true,
+      "plan_problems": [],
+      "applied": "applied",
+      "verdict": null,
+      "verdict_reason": null,
+      "fix": "discounts.py: return 0.20 if is_off_peak(booking.start_hour) else 0.0 -> return 0.20 if is_off_peak(booking.start_hour - 1) else 0.0",
+      "tokens": 1707,
+      "seconds": 6.8
+    },
+    {
+      "architecture": "C planner+reviewer",
+      "green": true,
+      "plan_ok": true,
+      "plan_problems": [],
+      "applied": "applied",
+      "verdict": "approve",
+      "verdict_reason": "Change the comparison operator to match the condition that starts off-peak pricing.",
+      "fix": "discounts.py: return start_hour > OFF_PEAK_FROM_HOUR -> return start_hour >= OFF_PEAK_FROM_HOUR",
+      "tokens": 2355,
+      "seconds": 5.8
+    },
+    {
+      "architecture": "A baseline",
+      "green": false,
+      "tool_calls": 16,
+      "tokens": 11948,
+      "seconds": 18.3
+    },
+    {
+      "architecture": "B planner",
+      "green": true,
+      "plan_ok": true,
+      "plan_problems": [],
+      "applied": "applied",
+      "verdict": null,
+      "verdict_reason": null,
+      "fix": "discounts.py: return 0.20 if is_off_peak(booking.start_hour) else 0.0 -> return 0.20 if is_off_peak(booking.start_hour) or booking.start_hour == OFF_PEAK_FROM_HOUR else 0.0",
+      "tokens": 1724,
+      "seconds": 5.7
+    },
+    {
+      "architecture": "C planner+reviewer",
+      "green": true,
+      "plan_ok": true,
+      "plan_problems": [],
+      "applied": "applied",
+      "verdict": "approve",
+      "verdict_reason": "Modifies the comparison to match the test case, addressing the issue.",
+      "fix": "discounts.py: return 0.20 if is_off_peak(booking.start_hour) else 0.0 -> return 0.20 if booking.start_hour >= OFF_PEAK_FROM_HOUR else 0.0",
+      "tokens": 2366,
+      "seconds": 4.7
+    }
+  ]
+}
