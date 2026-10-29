@@ -1,0 +1,97 @@
+{
+  "relevant": [
+    [
+      0.601,
+      "what is their home address",
+      "address"
+    ],
+    [
+      0.625,
+      "do they have a vehicle that needs a parking permit",
+      "vehicle"
+    ],
+    [
+      0.668,
+      "do they speak German",
+      "language"
+    ],
+    [
+      0.672,
+      "where does this person live",
+      "address"
+    ],
+    [
+      0.679,
+      "can I phone them",
+      "contact"
+    ],
+    [
+      0.687,
+      "how should we get in touch",
+      "contact"
+    ],
+    [
+      0.744,
+      "how many kids are in the household",
+      "household"
+    ],
+    [
+      0.751,
+      "which language should letters be in",
+      "language"
+    ]
+  ],
+  "irrelevant_top": [
+    [
+      0.583,
+      "where does this person live",
+      "household"
+    ],
+    [
+      0.541,
+      "where does this person live",
+      "contact"
+    ],
+    [
+      0.535,
+      "how should we get in touch",
+      "language"
+    ],
+    [
+      0.521,
+      "do they have a vehicle that needs a parking permit",
+      "contact"
+    ],
+    [
+      0.513,
+      "where does this person live",
+      "vehicle"
+    ],
+    [
+      0.499,
+      "what is their home address",
+      "contact"
+    ],
+    [
+      0.495,
+      "do they speak German",
+      "address"
+    ],
+    [
+      0.489,
+      "what is their home address",
+      "household"
+    ],
+    [
+      0.488,
+      "which language should letters be in",
+      "contact"
+    ],
+    [
+      0.478,
+      "do they speak German",
+      "contact"
+    ]
+  ],
+  "gap": 0.018000000000000016
+}

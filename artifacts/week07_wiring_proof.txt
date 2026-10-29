@@ -1,0 +1,5 @@
+memory.search('A. Muller', 'How do I register a new address?') -> 1 hit(s): ['lives at 12 rue de Hollerich']
+handbook: 84 chunks, top 3:
+  RB-VIGNETTE / How to apply
+  RB-VIGNETTE / How to apply
+  RB-ARRIVEE / What happens next

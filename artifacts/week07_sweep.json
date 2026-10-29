@@ -1,0 +1,280 @@
+{
+  "k": 5,
+  "meta": {
+    "300": {
+      "chunks": 146,
+      "dim": 768,
+      "overlap": 40,
+      "index_seconds": 4.27
+    },
+    "600": {
+      "chunks": 84,
+      "dim": 768,
+      "overlap": 80,
+      "index_seconds": 0.74
+    },
+    "1200": {
+      "chunks": 57,
+      "dim": 768,
+      "overlap": 160,
+      "index_seconds": 0.52
+    }
+  },
+  "table": {
+    "Q01": {
+      "tags": [
+        "distractor",
+        "superseded"
+      ],
+      "300": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 2,
+        "kw_recall": 1.0
+      },
+      "600": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 2,
+        "kw_recall": 1.0
+      },
+      "1200": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 3,
+        "kw_recall": 1.0
+      }
+    },
+    "Q02": {
+      "tags": [
+        "rare-token"
+      ],
+      "300": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 9,
+        "kw_recall": 0.0
+      },
+      "600": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 4,
+        "kw_recall": 1.0
+      },
+      "1200": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 2,
+        "kw_recall": 1.0
+      }
+    },
+    "Q03": {
+      "tags": [
+        "easy"
+      ],
+      "300": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 1,
+        "kw_recall": 1.0
+      },
+      "600": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 1,
+        "kw_recall": 1.0
+      },
+      "1200": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 2,
+        "kw_recall": 1.0
+      }
+    },
+    "Q04": {
+      "tags": [
+        "vocabulary"
+      ],
+      "300": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 1,
+        "kw_recall": 1.0
+      },
+      "600": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 1,
+        "kw_recall": 1.0
+      },
+      "1200": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 1,
+        "kw_recall": 1.0
+      }
+    },
+    "Q05": {
+      "tags": [
+        "multi-document"
+      ],
+      "300": {
+        "dense_rank": 17,
+        "dense_recall": 0.0,
+        "kw_rank": 13,
+        "kw_recall": 0.0
+      },
+      "600": {
+        "dense_rank": 22,
+        "dense_recall": 0.0,
+        "kw_rank": 6,
+        "kw_recall": 0.0
+      },
+      "1200": {
+        "dense_rank": 20,
+        "dense_recall": 0.0,
+        "kw_rank": 8,
+        "kw_recall": 0.0
+      }
+    },
+    "Q06": {
+      "tags": [
+        "negation"
+      ],
+      "300": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 11,
+        "kw_recall": 0.0
+      },
+      "600": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 16,
+        "kw_recall": 0.0
+      },
+      "1200": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 4,
+        "kw_recall": 1.0
+      }
+    },
+    "Q07": {
+      "tags": [
+        "easy"
+      ],
+      "300": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 2,
+        "kw_recall": 1.0
+      },
+      "600": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 3,
+        "kw_recall": 1.0
+      },
+      "1200": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 2,
+        "kw_recall": 1.0
+      }
+    },
+    "Q08": {
+      "tags": [
+        "numeric"
+      ],
+      "300": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 1,
+        "kw_recall": 1.0
+      },
+      "600": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 1,
+        "kw_recall": 1.0
+      },
+      "1200": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 1,
+        "kw_recall": 1.0
+      }
+    },
+    "Q09": {
+      "tags": [
+        "distractor"
+      ],
+      "300": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 3,
+        "kw_recall": 1.0
+      },
+      "600": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 2,
+        "kw_recall": 1.0
+      },
+      "1200": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 4,
+        "kw_recall": 1.0
+      }
+    },
+    "Q10": {
+      "tags": [
+        "easy"
+      ],
+      "300": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 1,
+        "kw_recall": 1.0
+      },
+      "600": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 1,
+        "kw_recall": 1.0
+      },
+      "1200": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 1,
+        "kw_recall": 1.0
+      }
+    },
+    "Q11": {
+      "tags": [
+        "easy"
+      ],
+      "300": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 18,
+        "kw_recall": 0.0
+      },
+      "600": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 5,
+        "kw_recall": 1.0
+      },
+      "1200": {
+        "dense_rank": 1,
+        "dense_recall": 1.0,
+        "kw_rank": 6,
+        "kw_recall": 0.0
+      }
+    }
+  },
+  "embed_model": "nomic-embed-text"
+}
