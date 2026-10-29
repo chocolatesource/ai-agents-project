@@ -47,8 +47,9 @@ def main() -> int:
 
     print("== week 5")
     rc, out = run([PY, "labs/week05/toyrepo/run_tests.py"])
-    check("toy repo has exactly the one deliberate failure",
-          "failures=1" in out and "run=16" in out, out[-120:])
+    check("toy repo has exactly one failure, and it is test_off_peak_starts_at_twenty",
+          "failures=1" in out and "run=16" in out
+          and "FAIL: test_off_peak_starts_at_twenty" in out, out[-120:])
     rc, out = run([PY, "-c",
         "import sys; sys.path.insert(0,'labs/week05/starter');"
         "from agents import Plan, validate_plan;"
@@ -68,22 +69,31 @@ def main() -> int:
           out.strip().endswith("3 applied True"), out[-200:])
     t = json.loads((ROOT / "artifacts/week05_architectures.json").read_text(encoding="utf-8"))["rows"]
     green = {a: sum(r["green"] for r in t if r["architecture"] == a) for a in {r["architecture"] for r in t}}
-    check("saved week 5 table is 1/3 green for each architecture", set(green.values()) == {1} and len(t) == 9, str(green))
+    check("SAVED week 5 table (read, not re-run): 1/3 green each, 9 rows, tokens and seconds present",
+          set(green.values()) == {1} and len(t) == 9
+          and all("tokens" in r and "seconds" in r for r in t), str(green))
 
     print("== week 6")
     rc, out = run([PY, "labs/week06/starter/06_checkpoint1.py"])
-    check("checkpoint 1: restart, scope, k, forget (5 checks)", rc == 0 and out.count("[PASS]") == 5, out[-300:])
+    check("checkpoint 1: restart, scope, k, forget (5 checks, no FAIL)",
+          rc == 0 and out.count("[PASS]") == 5 and "[FAIL]" not in out, out[-300:])
     for flag, expect_fail in (("", False), ("--control", True), ("--modern-headers", True)):
         rc, out = run([PY, "labs/week06/starter/02_stateless.py"] + ([flag] if flag else []), timeout=120)
         passes, fails = out.count("[PASS]"), out.count("[FAIL]")
         want = (2, 1) if expect_fail else (3, 0)
-        check(f"02_stateless.py {flag or '(default)'}: {'third check FAILs' if expect_fail else 'all 3 pass'}",
-              (passes, fails) == want, f"pass={passes} fail={fails}")
+        failed_lines = [ln for ln in out.splitlines() if "[FAIL]" in ln]
+        check(f"02_stateless.py {flag or '(default)'}: "
+              f"{'ONLY the session-refusal check FAILs' if expect_fail else 'all 3 pass'}",
+              (passes, fails) == want
+              and (not expect_fail or "refused in session mode" in failed_lines[0]),
+              f"pass={passes} fail={fails} {failed_lines}")
     rc, out = run([PY, "labs/week06/starter/02_stateless.py"], timeout=120)
-    check("session-mode error text is exactly 'Bad Request: Missing session ID'",
-          "Bad Request: Missing session ID" in out)
+    sess = [ln for ln in out.splitlines() if ln.strip().startswith("stateless_http=False")]
+    check("session-mode row has status 400 AND the output quotes 'Bad Request: Missing session ID'",
+          bool(sess) and " 400 " in sess[0] and "Bad Request: Missing session ID" in out, str(sess))
     rc, out = run([PY, "labs/week06/starter/04_a2a_channel.py"], timeout=120)
-    check("A2A channel: 7 checks pass", rc == 0 and out.count("[PASS]") == 7, out[-200:])
+    check("A2A channel: 7 checks pass, no FAIL",
+          rc == 0 and out.count("[PASS]") == 7 and "[FAIL]" not in out, out[-200:])
     rc, out = run([PY, "labs/week06/starter/03_a2a.py"], timeout=120)
     check("given A2A demo runs", rc == 0 and "5 an artifact" in out)
     src = "".join(p.read_text(encoding="utf-8") for p in
@@ -100,6 +110,7 @@ def main() -> int:
         "for size,ov in ((300,40),(600,80),(1200,160)):\n"
         "    ch=chunk_sections(s,size,ov)\n"
         "    for sec in s:\n"
+        "        assert any(c.key==sec.key for c in ch), sec.key\n"
         "        j=' '.join(c.text for c in ch if c.key==sec.key)\n"
         "        bad+=sum(1 for w in set(sec.text.split()) if w not in j)\n"
         "    assert len({c.chunk_id for c in ch})==len(ch)\n"
@@ -110,15 +121,20 @@ def main() -> int:
     check("app.run: memory.search is scoped and returns the fact (needs Ollama embedder)",
           "1 hit(s)" in out and "Hollerich" in out, out[-300:])
     rc, out = run([PY, "-m", "app.run", "--subject", "B. Weber", "Where does this resident live?"], timeout=180)
-    check("app.run: another subject never sees A. Muller's fact",
-          "Hollerich" not in out.split("handbook")[0], out[-300:])
+    check("app.run: B. Weber gets exactly her own fact (Diderich) and A. Muller's (Hollerich) appears nowhere",
+          "memory.search('B. Weber'" in out and "1 hit(s)" in out
+          and "Diderich" in out and "Hollerich" not in out, out[-300:])
     sw = json.loads((ROOT / "artifacts/week07_sweep.json").read_text(encoding="utf-8"))["table"]
     moved = [q for q, r in sw.items() if len({r[s]["dense_rank"] for s in ("300", "600", "1200")}) > 1]
     check("saved sweep: dense rank moves only on Q05", moved == ["Q05"], str(moved))
     sim = json.loads((ROOT / "artifacts/week07_memory_similarity.json").read_text(encoding="utf-8"))
     mem = (ROOT / "app/memory.py").read_text(encoding="utf-8")
-    check("MIN_SIMILARITY 0.59 matches the saved threshold table (0 wrong facts admitted)",
-          "MIN_SIMILARITY = 0.59" in mem and sim["thresholds"]["0.59"]["wrong_fact_admitted"].startswith("0/"))
+    lowest_rel = min(x[0] for x in sim["relevant"])
+    top_wrong = max(x[0] for x in sim["wrong_fact_top"])
+    check("MIN_SIMILARITY 0.59 lies between the highest wrong-fact and lowest relevant saved score",
+          "MIN_SIMILARITY = 0.59" in mem and top_wrong < 0.59 <= lowest_rel
+          and sim["thresholds"]["0.59"]["wrong_fact_admitted"].startswith("0/"),
+          f"{top_wrong} < 0.59 <= {lowest_rel}")
 
     print("== documents")
     d = (ROOT / "DECISIONS.md").read_text(encoding="utf-8")
@@ -127,6 +143,18 @@ def main() -> int:
     for w, n in ((5, 6), (6, 6), (7, 6)):
         sect = d.replace("\r\n", "\n").split(f"\n## Week {w}\n")[1].split("\n# Week")[0]
         check(f"week {w}: six numbered entries", len(re.findall(r"^### [1-6]\. ", sect, re.M)) == 6)
+
+    dn = d.replace("\r\n", "\n")
+    ev = json.loads((ROOT / "artifacts/week06_memory_eval.json").read_text(encoding="utf-8"))
+    meta = json.loads((ROOT / "artifacts/week07_sweep.json").read_text(encoding="utf-8"))["meta"]
+    tb = json.loads((ROOT / "artifacts/week05_task_b.json").read_text(encoding="utf-8"))["rows"]
+    check("DECISIONS text matches artifacts: k tokens, 2,960 vs 1,176, 84 chunks, 0.74 s",
+          list(ev["part1"]["prompt_tokens_by_k"].values()) == [56, 65, 81, 115]
+          and ev["on_total"]["tokens"] == 2960 and ev["off_total"]["tokens"] == 1176
+          and meta["600"]["chunks"] == 84 and meta["600"]["index_seconds"] == 0.74
+          and "k=6 115" in dn and "2,960" in dn and "1,176" in dn and "**0.74 s**" in dn)
+    check("DECISIONS Task B 0/3 done each: no row in the saved file is done",
+          len(tb) == 9 and sum(r["done"] for r in tb) == 0 and "| 0/3 |" in dn)
 
     print("== git")
     rc, out = run(["git", "status", "--short"])

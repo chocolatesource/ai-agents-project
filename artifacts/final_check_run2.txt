@@ -1,0 +1,51 @@
+== contract and gold set
+  [PASS] project.verify passes
+  [PASS] gold set has 58 cases (weeks 2,3,4,5,7 add 10,24,10,2,12)
+== week 5
+  [PASS] toy repo has exactly one failure, and it is test_off_peak_starts_at_twenty
+  [PASS] validate_plan accepts a good plan and rejects a broken one with 4 problems
+  [PASS] apply_fix refuses 3 bad edits, applies the real fix, suite goes green
+  [PASS] SAVED week 5 table (read, not re-run): 1/3 green each, 9 rows, tokens and seconds present
+== week 6
+  [PASS] checkpoint 1: restart, scope, k, forget (5 checks, no FAIL)
+  [PASS] 02_stateless.py (default): all 3 pass
+  [PASS] 02_stateless.py --control: ONLY the session-refusal check FAILs
+  [PASS] 02_stateless.py --modern-headers: ONLY the session-refusal check FAILs
+  [PASS] session-mode row has status 400 AND the output quotes 'Bad Request: Missing session ID'
+  [PASS] A2A channel: 7 checks pass, no FAIL
+  [PASS] given A2A demo runs
+  [PASS] no code sets an Mcp-Session-Id header
+== week 7
+  [PASS] hand-worked metric tests pass (3)
+  [PASS] chunker loses no words at 300/600/1200 and ids are unique
+  [PASS] app.run: memory.search is scoped and returns the fact (needs Ollama embedder)
+  [FAIL] app.run: B. Weber gets 0 hit(s) and Hollerich appears nowhere in the output  (memory.search('B. Weber', 'Where does this resident live?') -> 1 hit(s): ['lives at 5 avenue Gaston Diderich']
+handbook: 84 chunks, top 3:
+  RB-ARRIVEE / Who must declare
+  RB-VIGNETTE / Who can apply
+  RB-ARRIVEE / Who must declare
+)
+  [PASS] saved sweep: dense rank moves only on Q05
+  [PASS] MIN_SIMILARITY 0.59 lies between the highest wrong-fact and lowest relevant saved score
+== documents
+  [PASS] DECISIONS.md has a '## Week 1' section
+  [PASS] DECISIONS.md has a '## Week 2' section
+  [PASS] DECISIONS.md has a '## Week 3' section
+  [PASS] DECISIONS.md has a '## Week 4' section
+  [PASS] DECISIONS.md has a '## Week 5' section
+  [PASS] DECISIONS.md has a '## Week 6' section
+  [PASS] DECISIONS.md has a '## Week 7' section
+  [PASS] week 5: six numbered entries
+  [PASS] week 6: six numbered entries
+  [PASS] week 7: six numbered entries
+  [PASS] DECISIONS text matches artifacts: k tokens, 2,960 vs 1,176, 84 chunks, 0.74 s
+  [PASS] DECISIONS Task B 0/3 done each: no row in the saved file is done
+== git
+  [FAIL] working tree is clean (everything committed)  ( M final_check.py
+?? artifacts/final_check_run2.txt
+)
+  [INFO] commits not yet pushed: 6
+
+31/33 checks passed
+  FAILED: app.run: B. Weber gets 0 hit(s) and Hollerich appears nowhere in the output
+  FAILED: working tree is clean (everything committed)
