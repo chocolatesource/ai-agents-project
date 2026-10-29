@@ -1,0 +1,4 @@
+test_metrics.py::test_rank_is_three PASSED                               [ 33%]
+test_metrics.py::test_recall_counts_sections_not_chunks PASSED           [ 66%]
+test_metrics.py::test_no_gold_anywhere_is_none_not_a_number PASSED       [100%]
+============================== 3 passed in 0.02s ==============================

@@ -2,7 +2,10 @@
 
     python 04_a2a_channel.py
 
-A2A-STYLE, not a certified implementation (same caveat as 03_a2a.py). Stdlib
+A2A-STYLE, not a certified implementation (same caveat as 03_a2a.py).
+A2A is a different protocol from MCP, so the MCP revision 2026-07-28 does not
+apply here; this is modelled on the A2A agent-card / task / artifact vocabulary
+as of 2026-10-29. Stdlib
 only, no model, no network beyond localhost. Built from the three pieces the
 demonstration names (agent card, task lifecycle, artifact) and extended with
 the two things 03_a2a.py leaves out:

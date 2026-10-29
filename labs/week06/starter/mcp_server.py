@@ -205,7 +205,9 @@ if __name__ == "__main__":
     print(f"http://127.0.0.1:{port}/mcp")
     # stateless_http=True is the 2026-07-28 core: no initialize handshake,
     # no Mcp-Session-Id, every request self-describing. Leaving it off puts
-    # the server back on the old session-based model, and 02_stateless.py
-    # shows you the difference at the wire.
+    # the server back on session mode, where a header-less request without an
+    # initialize is refused (400 Missing session ID); 02_stateless.py shows
+    # that at the wire, and with --modern-headers shows the v2 SDK still
+    # answers a fully self-describing request in session mode.
     asyncio.run(app.run_streamable_http_async(
         host="127.0.0.1", port=port, stateless_http=True))

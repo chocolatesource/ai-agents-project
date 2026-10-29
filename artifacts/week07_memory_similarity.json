@@ -1,4 +1,9 @@
 {
+  "embed_model": "nomic-embed-text",
+  "date": "2026-10-29",
+  "queries": 12,
+  "facts": 5,
+  "top1_correct": "8/8",
   "relevant": [
     [
       0.601,
@@ -41,7 +46,7 @@
       "language"
     ]
   ],
-  "irrelevant_top": [
+  "wrong_fact_top": [
     [
       0.583,
       "where does this person live",
@@ -93,5 +98,48 @@
       "contact"
     ]
   ],
-  "gap": 0.018000000000000016
+  "off_topic_best": [
+    [
+      0.448,
+      "how much does a passport cost",
+      "address"
+    ],
+    [
+      0.435,
+      "when is waste collected",
+      "contact"
+    ],
+    [
+      0.431,
+      "tell me about the town council meeting",
+      "contact"
+    ],
+    [
+      0.4,
+      "what are the swimming pool opening hours",
+      "contact"
+    ]
+  ],
+  "thresholds": {
+    "0.5": {
+      "relevant_kept": "8/8",
+      "wrong_fact_admitted": "5/32",
+      "off_topic_queries_answered": "0/4"
+    },
+    "0.55": {
+      "relevant_kept": "8/8",
+      "wrong_fact_admitted": "1/32",
+      "off_topic_queries_answered": "0/4"
+    },
+    "0.59": {
+      "relevant_kept": "8/8",
+      "wrong_fact_admitted": "0/32",
+      "off_topic_queries_answered": "0/4"
+    },
+    "0.6": {
+      "relevant_kept": "8/8",
+      "wrong_fact_admitted": "0/32",
+      "off_topic_queries_answered": "0/4"
+    }
+  }
 }

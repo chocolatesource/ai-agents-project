@@ -31,12 +31,13 @@ DEFAULT_PATH = Path("artifacts/memory_store.json")
 RETENTION_DAYS = 365
 
 
-# Minimum cosine similarity for a fact to count as a hit. Chosen from the
-# measurement in artifacts/week07_memory_similarity.json (nomic-embed-text,
-# 2026-10-29): queries with no relevant fact scored at most 0.448, the lowest
-# relevant pair scored 0.601, and the right fact ranked first on 8 of 8 queries.
-# The margin comes from a 12-query sample; re-measure before trusting it.
-MIN_SIMILARITY = 0.50
+# Minimum cosine similarity for a fact to count as a hit. Chosen from
+# artifacts/week07_memory_similarity.json (nomic-embed-text, 2026-10-29, 12
+# queries x 5 facts): 0.50 admitted 5 of 32 wrong-fact pairs; 0.59 admits 0 and
+# keeps 8 of 8 relevant pairs. TUNED ON THE SAME 12 QUERIES with a margin of
+# 0.018 (lowest relevant 0.601, highest wrong-fact 0.583): it will not
+# transfer without re-measuring on new data.
+MIN_SIMILARITY = 0.59
 
 
 def _cosine(a: list[float], b: list[float]) -> float:

@@ -20,10 +20,17 @@ from __future__ import annotations
 
 import asyncio
 import json
+import sys
 import multiprocessing as mp
 import time
 import urllib.error
 import urllib.request
+
+# --control: BOTH servers run stateless, so check 3 must FAIL (proves it can).
+# --modern-headers: add MCP-Protocol-Version/Mcp-Method; the v2 SDK then
+# answers in session mode too (the 400 depends on those headers being absent).
+CONTROL = "--control" in sys.argv
+MODERN_HEADERS = "--modern-headers" in sys.argv
 
 PORT_STATELESS = 8941
 PORT_SESSION = 8942
@@ -72,12 +79,14 @@ SELF_DESCRIBING = {
 
 def raw_post(port: int, body: dict) -> tuple[int, dict[str, str], str]:
     """One HTTP request. No SDK, because the SDK is what hides the headers."""
+    headers = {"Content-Type": "application/json",
+               "Accept": "application/json, text/event-stream"}
+    if MODERN_HEADERS:                      # revision 2026-07-28 routing headers
+        headers["MCP-Protocol-Version"] = "2026-07-28"
+        headers["Mcp-Method"] = body["method"]
     request = urllib.request.Request(
-        f"http://127.0.0.1:{port}/mcp",
-        data=json.dumps(body).encode(),
-        headers={"Content-Type": "application/json",
-                 "Accept": "application/json, text/event-stream"},
-        method="POST")
+        f"http://127.0.0.1:{port}/mcp", data=json.dumps(body).encode(),
+        headers=headers, method="POST")
     try:
         with urllib.request.urlopen(request, timeout=15) as response:
             return response.status, dict(response.headers), \
@@ -101,7 +110,7 @@ def ask(stateless: bool, port: int) -> dict:
 
 
 def main() -> int:
-    rows = [ask(True, PORT_STATELESS), ask(False, PORT_SESSION)]
+    rows = [ask(True, PORT_STATELESS), ask(CONTROL, PORT_SESSION)]
 
     print(f"\n{'server mode':<24}{'status':>8}{'Mcp-Session-Id':>36}"
           f"{'answered':>10}")

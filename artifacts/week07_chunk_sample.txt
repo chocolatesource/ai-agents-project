@@ -1,0 +1,14 @@
+chunk_id: RB-TRANSPORT::Fares::0 | doc_id: RB-TRANSPORT | section: Fares | chars: 605
+---
+Fares
+Travel on the communal shuttle is free of charge for all passengers. No
+ticket and no registration are required, and there is no distinction between
+residents and visitors. The shuttle is not part of the regional network and
+its timetable is published separately by the communal technical service.
+
+Because the shuttle is free, it carries no ticketing equipment and no
+passenger counting system. The commune estimates use twice a year through a
+manual count over one week, which is why the published passenger figures
+should be read as an order of magnitude rather than as a measurement.
+
+Passengers

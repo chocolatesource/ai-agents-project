@@ -1,0 +1,6 @@
+stateless_http=True          200                                None      True
+stateless_http=False         400    6bebd971463341cf8a052831915bdb49     False
+  session-mode error quoted: {"jsonrpc":"2.0","id":null,"error":{"code":-32600,"message":"Bad Request: Missing session ID"}}
+  [PASS] stateless server answers the request
+  [PASS] stateless server issues no Mcp-Session-Id
+  [PASS] identical request is refused in session mode (400, no answer)

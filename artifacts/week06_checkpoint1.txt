@@ -1,0 +1,11 @@
+restart: process 1 recalls 0 fact(s); after a write, a NEW process 2 recalls ['lives at 12 rue de Hollerich']
+scope: B. Weber searching A's words -> ['lives at 5 avenue Gaston Diderich']
+k: k=1 -> 1 fact(s), k=2 -> 2 fact(s)
+handles: fact-3772f1d0c77e | sequential-looking? False
+forget: returned True; searching 'Hollerich' now -> []; forget again -> False
+
+  [PASS] store survives a process restart (0 facts, then the fact)
+  [PASS] other subject's facts do not come back
+  [PASS] search respects k
+  [PASS] handle is not sequential
+  [PASS] forget removes the fact; second forget returns False

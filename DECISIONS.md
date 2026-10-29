@@ -793,6 +793,10 @@ architecture: 3 | date: 2026-10-29 | table from: my own live runs
 The recording (2026-08-11) is shown beside it and no number below is taken
 from it unless it says so.
 
+**Stamp for every table in this week-5 section** (the JSON artifacts do not
+carry these): model qwen2.5:7b, Pydantic AI 2.63.0, Ollama 0.30.8, run date
+2026-10-29.
+
 ### 1. The plan schema
 
 `Plan` is `goal: str`, `steps: list[str]`, `suspect_file: str`. Flat.
@@ -827,7 +831,7 @@ B 0/3, C 0/3); the table in section 3 is the run after the change.
 | check | what it catches |
 |---|---|
 | step count in 2..6 | an empty or one-line plan, or one that wanders |
-| `suspect_file` in the four known files | a hallucinated file (`booking_service.py`, `booking_model.py` and `booking_discounts.py` all appeared in the mode sweep) |
+| `suspect_file` in the four known files | a hallucinated file (I saw `booking_service.py`, `booking_model.py` and `booking_discounts.py` in the console output of an exploratory run; those names were not saved to an artifact) |
 | some step runs/verifies the tests | a plan with no way of knowing it worked |
 | no step edits a test | what `apply_fix` would refuse anyway, caught before any call |
 
@@ -850,8 +854,10 @@ qwen2.5:7b, Pydantic AI 2.63.0, temperature 0, 3 runs each, 2026-10-29:
 | C planner + reviewer | 1/3 | 2,339 | 4.1 | 0/3, 3,441, 29.0 |
 
 Three runs each cannot separate these three: a single run flips any cell. What
-the data does support is the cost column. A spends **12 times the tokens of B**
-for the same green count, and its spread is large (11,581 to 50,519 tokens).
+the data does support is the cost column. A's mean (20,700 tokens, 21.1 s)
+**includes a crashed run 1 that counts as 0 tokens**; over its two completed
+runs A averages about 31,000 tokens (11,581 and 50,519), roughly **18 times
+B's 1,688**, for the same green count. Either way the spread is large.
 
 What went wrong in the red runs, which is the more useful list:
 
@@ -886,7 +892,7 @@ I also handed the reviewer five patches directly, 5 times each
 | correct `>` to `>=` | 4/5 | 1/5 |
 | constant 20 to 19 | 0/5 | 5/5 |
 | special-case `== 20` | 0/5 | 5/5 |
-| edit the failing test's expected value | 0/5 | 5/5 |
+| change the failing test's expected value (artifact key: "delete the failing test") | 0/5 | 5/5 |
 | nonsense `start_hour - 1` | **2/5** | 3/5 |
 
 It reliably catches the test edit and the special case, wrongly rejects the
@@ -895,11 +901,13 @@ correct fix once in five, and **approves nonsense two times in five**.
 Extra cost: 651 tokens and 0.5 s per run (2,339 vs 1,688; 4.1 vs 3.6 s).
 Would I ship it: **not on this evidence.** In the live table it did not raise
 the green count (1/3 with and without it), and in the probe it approved
-nonsense 2 times in 5. But it did one thing the suite cannot: it rejected the
-constant-19 change 5 times in 5, a change that leaves the suite green. That is
-the case where it would earn its cost, a plausible edit the tests do not
-cover. I would change my mind with an uncovered-edit set on which the reviewer
-beats a no-reviewer pipeline, which I have not built.
+nonsense 2 times in 5. It also rejected two patches that leave the suite green (the
+constant-19 change, whose ground truth I marked "debatable", and the
+special-case patch), 5 of 5 each. A suite cannot reject those, so that is where
+a reviewer could earn its cost. This is n=5 per patch with no no-reviewer
+control on the same patches, so it is a lead, not a result. I would change my
+mind with an uncovered-edit set on which the reviewer beats a no-reviewer
+pipeline, which I have not built.
 
 ### 6. What my verifier cannot catch
 
@@ -935,7 +943,9 @@ bare `20` outside `discounts.py`; each rate once in it). The start state has
 **The gap does not widen: nothing finishes.** B and C remove one or two
 problems on average; A removes none. Every architecture broke the suite in one
 run of three. The planner did not earn its cost on task B (47% more tokens than
-A for 1.7 problems fewer, and no completion), whereas on task A it was
+A for 1.7 problems fewer on average, and no completion; B's lowest count, 11,
+came from a run where the suite went red, so fewer problems is not progress),
+whereas on task A it was
 12 times cheaper than the baseline. My single-line proposal loop is the wrong
 shape for a refactor, so this is evidence about my harness at least as much as
 about planning.
@@ -981,7 +991,7 @@ data. A random one costs nothing and removes both.
 
 Prompt tokens for the same question with k stored facts injected
 (`artifacts/week06_memory_eval.json`, qwen2.5:7b): k=0 56, k=1 65, k=3 81,
-k=6 115. About **9 to 10 tokens per fact**.
+k=6 115. About **8 to 10 tokens per fact** (9.0, 8.3 and 9.8 at k=1, 3, 6).
 
 At 400 facts for one subject the token cost per call is still capped by k, but
 my dense `search` **embeds every fact of the subject on every call**: 2.4 s
@@ -1022,13 +1032,25 @@ The session-mode server's error, quoted exactly:
 
 `{"jsonrpc":"2.0","id":null,"error":{"code":-32600,"message":"Bad Request: Missing session ID"}}`
 
-All three checks in `02_stateless.py` pass: stateless answers, stateless issues
-no session id, and the **identical request is refused in session mode**. A
-trap I hit on the way: when I added the `MCP-Protocol-Version` and `Mcp-Method`
-headers to the raw request, the session-mode server answered **200** too,
-because the v2 SDK serves modern self-describing requests whatever
-`stateless_http` says. That version of the third check failed, which is how I
-know it can fail. The shipped request is the starter's header set.
+All three checks in `02_stateless.py` pass (`artifacts/week06_stateless_default.txt`):
+stateless answers, stateless issues no session id, and the **identical request
+is refused in session mode**.
+
+Two saved runs show the third check can fail, which is what makes it a
+demonstration:
+
+- `--control` (both servers stateless): check 3 **FAILs**
+  (`artifacts/week06_stateless_control.txt`).
+- `--modern-headers` (the raw request also carries `MCP-Protocol-Version` and
+  `Mcp-Method`): the session-mode server answers **200**, so check 3 **FAILs**
+  (`artifacts/week06_stateless_modern-headers.txt`).
+
+The second run limits what the 400 proves. The v2 SDK serves modern
+self-describing requests whatever `stateless_http` says, so the 400 shows that
+a header-less, un-initialised request is refused by a session-mode server and
+accepted by a stateless one. It shows the session requirement the revision
+removed, for that request shape; it does not show that session mode refuses
+every self-describing request, because it does not.
 
 Why the two-server handle demonstration proves nothing on its own: the state is
 in `memory_store.json` and each call opens a fresh connection, so it would
@@ -1054,6 +1076,32 @@ the store only, and I would have to say so.
 Also named, not fixed: two instances writing at the same moment both load,
 modify and save the whole file, so **the last writer silently wins and the
 other's fact is lost.** There is no lock.
+
+### Checkpoint 1 evidence
+
+`artifacts/week06_checkpoint1.txt` (week 6 keyword store, 5 checks pass): a
+new process recalls a fact that a previous process wrote (0 facts before, the
+fact after), so behaviour differs across runs; B. Weber searching with A's
+words gets only B's own fact; `k=1` returns 1 and `k=2` returns 2; handles are
+not sequential; `forget` returns True, the fact no longer comes back, and a
+second `forget` returns False.
+
+### Checkpoint 3: delegation observed (`artifacts/week06_a2a_demo.txt`)
+
+- **Card field read:** `skills` (ids `translate`). Question 2 asked for
+  `summarize`, which the card does not declare, so it was handled locally and
+  no request was sent: deciding from the card costs nothing, finding out after
+  a round trip costs a round trip.
+- **States:** a task is accepted, works, and ends in `completed`, `failed`
+  or (in my channel) `canceled`; the artifact appears only on `completed`.
+- **Failed path:** `failed` is a state in a normal 200 response, not an
+  exception; the client falls back or escalates and marks the answer degraded.
+  **Timeout path:** the client gives up waiting but keeps the task id, because
+  the work may still be running; an abandoned id can be neither chased nor
+  cancelled (my channel collects the result later with it).
+- **No-text artifact:** reported as a mismatch rather than stringified, because
+  coercing unknown output to a string is how a resident one day gets shown a
+  dict.
 
 ### Homework: the A2A channel
 
@@ -1084,12 +1132,18 @@ body characters, overlap 80, k=5 (recall) | store: Chroma `EphemeralClient`,
 cosine | Ollama 0.30.8 | date: 2026-10-29 | corpus: 10 documents, 56
 sections.
 
+**Applies to entries 1 to 6 below:** embedder nomic-embed-text (768 dimensions),
+chunker 600/80 characters (sweep: 300/40 and 1200/160), recall at k=5, run date
+2026-10-29.
+
 ### 1. The chunker
 
 600 characters, overlap 80 (stride 520), cuts snapped to word boundaries, the
 section heading prepended to every chunk, `doc_id::section::n` as id. 84
 chunks (146 at 300/40, 57 at 1200/160). A coverage test shows 0 words lost at
-all three sizes. I kept 600 because it is the default and the sweep (below)
+all three sizes. One chunk printed by hand (`artifacts/week07_chunk_sample.txt`,
+`RB-TRANSPORT::Fares::0`, 605 characters) reads as a complete answer to the
+shuttle-fare question and carries its doc_id and section. I kept 600 because it is the default and the sweep (below)
 shows it makes no difference to 10 of 11 dense ranks, so I have no evidence for
 any other number.
 
@@ -1119,8 +1173,7 @@ recall at 5 over sections:
 | Q11 | easy | 1 | 5 | 1.0 | 1.0 |
 | Q12 | unanswerable | - | - | - | - |
 
-`rank_of_first_gold` and `recall_at_k` were checked against a hand-worked
-example before use (a section split into three chunks counts once).
+`rank_of_first_gold` and `recall_at_k` were checked against a worked example (`labs/week07/starter/test_metrics.py`, output in `artifacts/week07_metric_check.txt`, 3 passed): ranking C, C, A::s1, A::s1, D, B::s2 against gold {A::s1, B::s2} gives rank 3 and recall@5 0.5, because the two A::s1 chunks count once and B::s2 is at rank 6; a ranking with no gold chunk gives rank None and recall 0.0.
 
 ### 4. Is rank one on ten of eleven good, or is the task easy
 
@@ -1163,8 +1216,12 @@ o'clock trap).
 - **Moved:** Q05 only (17, 22, 20).
 - **Did not move (rank 1 at all three):** Q01, Q02, Q03, Q04, Q06, Q07, Q08,
   Q09, Q10, Q11.
-- Keyword rank moved on 8 questions, e.g. Q06 11, 16, 4 and Q11 18, 5, 6 and
-  Q02 9, 4, 2: keyword search is the one that depends on chunk size.
+- Keyword rank moved on 8 questions, rank at 300 / 600 / 1200: Q01 2, 2, 3;
+  Q02 9, 4, 2; Q03 1, 1, 2; Q05 13, 6, 8; Q06 11, 16, 4; Q07 2, 3, 2; Q09 3, 2,
+  4; Q11 18, 5, 6. Two change whether the question counts as found at all:
+  Q06 enters the top 5 only at 1200 (recall 0, 0, 1) and Q11 only at 600
+  (recall 0, 1, 0). Keyword search is the retriever that depends on chunk
+  size.
 
 ### Homework: wired into memory
 
@@ -1175,19 +1232,25 @@ week 6 keyword match as the fallback if the embedder is down. Proof:
 prints a `memory.search` line ending `1 hit(s)` (`artifacts/week07_wiring_proof.txt`).
 The MCP server now imports it.
 
-The minimum similarity is **0.50**, chosen from data
-(`artifacts/week07_memory_similarity.json`, 12 queries, 5 facts): queries
-with nothing relevant stored scored at most 0.448, the lowest relevant pair
-0.601, the right fact ranked first on 8 of 8. The margin is from a small
-sample.
+The minimum similarity is **0.59**, from `artifacts/week07_memory_similarity.json`
+(12 queries x 5 facts, nomic-embed-text, 2026-10-29). The right fact ranks first
+on 8 of 8 queries, and a query with nothing relevant stored scores at most
+0.448. But my first choice, 0.50, **admits 5 of 32 wrong-fact pairs** (a wrong
+fact of the same subject, up to 0.583), which ranking alone does not stop
+because `search` returns up to k hits. At 0.59: 8 of 8 relevant pairs kept, 0 of
+32 wrong-fact pairs admitted, 0 of 4 off-topic queries answered. **This is tuned
+on the same 12 queries, with a margin of 0.018 (lowest relevant 0.601, highest
+wrong-fact 0.583), so it will not transfer to new data without re-measuring.**
+
+**Cost of 0.59, visible in the proof** (`artifacts/week07_wiring_proof.txt`):
+the brief's query "How do I register a new address?" returns **0 hits** at 0.59
+(it returned 1 at 0.50), while "Where does this resident live?" returns 1. That
+is the precision/recall trade made concrete: the stricter threshold stops wrong
+facts and also misses a loosely related query.
 
 ### What my retrieval measurement still cannot tell me
 
-Whether the retrieved text *answers* the question (no generation is scored),
-whether a superseded chunk sits above or below the gold one in the top 5
-(rank of the first gold chunk ignores what outranks it, and Q01 and Q09 are
-exactly the distractor cases), and whether 11 questions on a synthetic corpus
-say anything about real inputs.
+It cannot tell me whether the retrieved text answers the question, whether a superseded chunk outranks the gold one in the top 5 (Q01 and Q09), or whether 11 questions on a synthetic corpus say anything about real inputs.
 
 ### Deferred
 

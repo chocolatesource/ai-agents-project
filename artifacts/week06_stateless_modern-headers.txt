@@ -1,0 +1,6 @@
+stateless_http=True          200                                None      True
+stateless_http=False         200                                None      True
+  session-mode error quoted: {"jsonrpc":"2.0","id":1,"result":{"cacheScope":"private","resultType":"complete","tools":[{"description":"Read back everything attached to a case handle.","inputSchema":{"type":"object","properties":{
+  [PASS] stateless server answers the request
+  [PASS] stateless server issues no Mcp-Session-Id
+  [FAIL] identical request is refused in session mode (400, no answer)
