@@ -171,7 +171,8 @@ def main() -> int:
     cw = (ROOT / "artifacts/week06_concurrent_writes.txt").read_text(encoding="utf-8")
     found = [int(x) for x in re.findall(r"found (\d+)", cw)]
     check("concurrent writes: every saved run lost updates (found < 80) and crashed a reader",
-          len(found) == 3 and all(f < 80 for f in found) and cw.count("JSONDecodeError") == 3, str(found))
+          len(found) == 3 and all(f < 80 for f in found)
+          and len(re.findall(r"^json\.decoder\.JSONDecodeError", cw, re.M)) == 3, str(found))
 
     print("== git")
     rc, out = run(["git", "status", "--short"])
