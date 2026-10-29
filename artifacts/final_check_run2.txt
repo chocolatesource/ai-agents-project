@@ -19,12 +19,7 @@
   [PASS] hand-worked metric tests pass (3)
   [PASS] chunker loses no words at 300/600/1200 and ids are unique
   [PASS] app.run: memory.search is scoped and returns the fact (needs Ollama embedder)
-  [FAIL] app.run: B. Weber gets 0 hit(s) and Hollerich appears nowhere in the output  (memory.search('B. Weber', 'Where does this resident live?') -> 1 hit(s): ['lives at 5 avenue Gaston Diderich']
-handbook: 84 chunks, top 3:
-  RB-ARRIVEE / Who must declare
-  RB-VIGNETTE / Who can apply
-  RB-ARRIVEE / Who must declare
-)
+  [PASS] app.run: B. Weber gets exactly her own fact (Diderich) and A. Muller's (Hollerich) appears nowhere
   [PASS] saved sweep: dense rank moves only on Q05
   [PASS] MIN_SIMILARITY 0.59 lies between the highest wrong-fact and lowest relevant saved score
 == documents
@@ -41,11 +36,9 @@ handbook: 84 chunks, top 3:
   [PASS] DECISIONS text matches artifacts: k tokens, 2,960 vs 1,176, 84 chunks, 0.74 s
   [PASS] DECISIONS Task B 0/3 done each: no row in the saved file is done
 == git
-  [FAIL] working tree is clean (everything committed)  ( M final_check.py
-?? artifacts/final_check_run2.txt
+  [FAIL] working tree is clean (everything committed)  ( M artifacts/final_check_run2.txt
 )
-  [INFO] commits not yet pushed: 6
+  [INFO] commits not yet pushed: 7
 
-31/33 checks passed
-  FAILED: app.run: B. Weber gets 0 hit(s) and Hollerich appears nowhere in the output
+32/33 checks passed
   FAILED: working tree is clean (everything committed)
