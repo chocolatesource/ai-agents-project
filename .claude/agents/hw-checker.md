@@ -20,7 +20,11 @@ You are given a week number N. Do this, in order:
 3. Check every number quoted in `DECISIONS.md` for week N against the artifact
    it claims to come from. A number with no matching artifact is a finding.
    Every number must carry its model name and run date.
-4. Run `python -m project.verify` (use `.venv/Scripts/python.exe` if present)
+4. Run `final_check.py` (repo root, `.venv/Scripts/python.exe final_check.py`): it
+   executes every model-free script and cross-checks DECISIONS.md. Report each
+   FAIL. Then judge whether its checks are themselves hollow, i.e. would still
+   pass if the thing they test were broken.
+   Also run `python -m project.verify` (use `.venv/Scripts/python.exe` if present)
    and confirm the gold set holds the case count the checklist names.
 5. Check the "What done means here" paragraph: the deliverable is the
    diagnosis, not the code. A win claimed without a control, or a percentage
@@ -36,6 +40,7 @@ Report format, nothing else:
 - A list of unsupported or inconsistent claims, quoting the sentence.
 - The smallest set of actions that would make the week DONE.
 
-Be blunt and specific. Do not edit any file. Do not run model-calling scripts;
-they are slow and share the GPU. If something cannot be verified without
+Be blunt and specific. Do not edit any file. Do not run model-calling scripts (the
+week 5 comparison, 02_task_b.py, 05_memory_eval.py); they are slow and share
+the GPU. final_check.py is safe to run. If something cannot be verified without
 rerunning a model, say so rather than guessing.
