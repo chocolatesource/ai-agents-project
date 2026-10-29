@@ -1,0 +1,17 @@
+{
+  "facts": [
+    {
+      "subject": "A. Muller",
+      "kind": "language",
+      "text": "prefers correspondence in German",
+      "handle": "fact-7a967dfa206e",
+      "written_at": "2026-10-29T21:21:22+00:00"
+    }
+  ],
+  "cases": {
+    "case-d67de9cd346a": "A. Muller"
+  },
+  "owners": {
+    "case-d67de9cd346a": "alice"
+  }
+}

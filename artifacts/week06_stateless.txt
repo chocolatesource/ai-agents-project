@@ -1,0 +1,15 @@
+Created new transport with session ID: bc11611a682b497a88e8d598ff51370c
+
+server mode               status                      Mcp-Session-Id  answered
+------------------------------------------------------------------------------
+stateless_http=True          200                                None      True
+stateless_http=False         400    bc11611a682b497a88e8d598ff51370c     False
+
+  stateless body: event: message
+data: {"jsonrpc":"2.0","id":1,"result":{"tools":[{"description":"Read back everything attached
+  session   body: {"jsonrpc":"2.0","id":null,"error":{"code":-32600,"message":"Bad Request: Missing session ID"}}
+  session-mode error quoted: {"jsonrpc":"2.0","id":null,"error":{"code":-32600,"message":"Bad Request: Missing session ID"}}
+
+  [PASS] stateless server answers the request
+  [PASS] stateless server issues no Mcp-Session-Id
+  [PASS] identical request is refused in session mode (400, no answer)

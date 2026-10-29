@@ -1,0 +1,19 @@
+card fetched: translation-agent, skills ['translate']
+
+1 delegated
+   -> {'taskId': 'task-1', 'state': 'completed', 'artifact': {'parts': [{'text': "heures d'ouverture"}]}}
+
+2 not delegated
+   -> the card declares no 'summarize' skill, so this is handled locally and no request is sent
+
+3 failed
+   -> {'taskId': 'task-3', 'state': 'failed', 'error': 'the glossary does not cover this text'}
+   policy here: fall back to the local glossary and mark the answer degraded. Escalating to a human is equally defensible.
+
+4 timed out
+   -> timeout after 2.0s (TimeoutError)
+   the task id 'task-4' is kept, because the work may still be running and an abandoned id cannot be chased
+
+5 an artifact whose parts are not text
+   -> artifact has no text part: [{'data': {'x': 1}}]
+   report the mismatch rather than stringifying it. An agent that coerces unknown output into a string is an agent that will one day show a resident a dict.

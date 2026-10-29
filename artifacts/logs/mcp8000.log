@@ -1,0 +1,17 @@
+INFO:     Started server process [35468]
+INFO:     Waiting for application startup.
+[10/29/26 22:21:16] INFO     StreamableHTTP      streamable_http_manager.py:151
+                             session manager                                   
+                             started                                           
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+MCP revision 2026-07-28, streamable HTTP, stateless
+http://127.0.0.1:8000/mcp
+INFO:     127.0.0.1:7384 - "POST /mcp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:7384 - "POST /mcp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:7385 - "POST /mcp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:7385 - "POST /mcp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:7385 - "POST /mcp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:7386 - "POST /mcp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:7386 - "POST /mcp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:7386 - "POST /mcp HTTP/1.1" 200 OK

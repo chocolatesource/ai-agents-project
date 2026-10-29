@@ -1,0 +1,89 @@
+{
+  "model": "qwen2.5:7b",
+  "part1": {
+    "prompt_tokens_by_k": {
+      "0": 56,
+      "1": 65,
+      "3": 81,
+      "6": 115
+    },
+    "search_seconds_6_facts": 0.1,
+    "search_seconds_400_facts": 2.4
+  },
+  "off": [
+    {
+      "correct": true,
+      "turns": 2,
+      "tokens": 183
+    },
+    {
+      "correct": false,
+      "turns": 3,
+      "tokens": 311
+    },
+    {
+      "correct": true,
+      "turns": 2,
+      "tokens": 170
+    },
+    {
+      "correct": true,
+      "turns": 2,
+      "tokens": 167
+    },
+    {
+      "correct": true,
+      "turns": 2,
+      "tokens": 172
+    },
+    {
+      "correct": true,
+      "turns": 2,
+      "tokens": 173
+    }
+  ],
+  "on": [
+    {
+      "correct": true,
+      "turns": 2,
+      "tokens": 481
+    },
+    {
+      "correct": true,
+      "turns": 2,
+      "tokens": 487
+    },
+    {
+      "correct": true,
+      "turns": 2,
+      "tokens": 485
+    },
+    {
+      "correct": true,
+      "turns": 2,
+      "tokens": 502
+    },
+    {
+      "correct": true,
+      "turns": 2,
+      "tokens": 496
+    },
+    {
+      "correct": true,
+      "turns": 2,
+      "tokens": 509
+    }
+  ],
+  "off_total": {
+    "correct": 5,
+    "turns": 13,
+    "tokens": 1176,
+    "n": 6
+  },
+  "on_total": {
+    "correct": 6,
+    "turns": 12,
+    "tokens": 2960,
+    "n": 6
+  }
+}

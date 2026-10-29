@@ -1,0 +1,8 @@
+catalog discovered on :8000 (6 tools): ['case_subject', 'forget', 'open_case', 'recall', 'recall_for_case', 'remember']
+case handle: case-d67de9cd346a   fact handle: fact-7a967dfa206e
+store file changed: True   (facts=1, cases=1)
+on :8001 case_subject -> 'A. Muller'
+on :8001 recall_for_case -> 'prefers correspondence in German'
+on :8001 wrong principal -> 'ERROR: unknown case'
+
+PASS: handle redeemed on a second instance (this alone does NOT prove statelessness; see 02_stateless.py)

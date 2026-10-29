@@ -1,0 +1,17 @@
+card: handbook-summary-agent, skills ['summarize']
+
+1 ok          {'status': 'ok', 'task': 't1', 'text': 'Waste is collected on Tuesdays....'}
+2 not sent    {'status': 'local', 'reason': "card declares no 'translate'"}
+3 failed      {'status': 'failed', 'task': 't3', 'error': 'the passage is not in a language I can summarise'}
+4 timeout     {'status': 'timeout', 'task': 't4', 'state': 'working'}
+  chased later completed ['submitted', 'working', 'completed']
+5 mismatch    {'status': 'mismatch', 'task': 't5', 'parts': [{'data': {'n': 1}}]}
+6 cancel      canceled -> canceled
+
+  [PASS] completed task returns text
+  [PASS] undeclared skill decided locally, nothing sent
+  [PASS] failed is a value with the error
+  [PASS] timeout keeps the task id
+  [PASS] kept id lets us collect the result later
+  [PASS] non-text artifact reported, not stringified
+  [PASS] cancelled task stays cancelled (no late completion)
